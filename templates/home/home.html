@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="{{ STATIC_PREFIX  }}css/wvb.css" rel="stylesheet" type="text/css"/>
+        <link href="{{ STATIC_PREFIX  }}css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+        <link href="{{ STATIC_PREFIX  }}css/fg.menu.css" rel="stylesheet" type="text/css"/>
+        <script src="{{ STATIC_PREFIX  }}js/jquery.js" type="text/javascript"></script>
+        <script src="{{ STATIC_PREFIX  }}js/jquery-ui.js" type="text/javascript"></script>
+        <script src="{{ STATIC_PREFIX  }}js/fg.menu.js" type="text/javascript"></script>
+        <script type="text/javascript">
+        	var academicomenu=null;
+        	var pagomenu=null;
+        	var carrera=null;
+        	var divcont=null;
+        	var divform=null;
+        	var divbienvenida=null;
+        	$(document).ready(function() {
+        		divcont=$("#col3_content");
+        		divbienvenida=$("#col1_content");
+        		divform=$("#col1");
+        	});
+        	function getAcademicoMenu(){
+        		if(academicomenu==null)
+        			academicomenu = $.ajax({
+        				url: "/wvb/include/menuacademico",dataType: "html",async: false
+        			}).responseText;
+        		divcont.html(academicomenu);
+    			menuacademico();
+        	}
+        	function getPagoMenu(){
+        		if(pagomenu==null)
+        			pagomenu = $.ajax({
+        				url: "/wvb/include/menupago",dataType: "html",async: false
+        			}).responseText;
+        		divcont.html(pagomenu);
+    			menuacademico();
+        	}
+        	function menuacademico(){
+				$('#hierarchybreadcrumb').menu({
+					content: $('#hierarchybreadcrumb').next().html(),
+					backLink: false
+				});
+			}
+			function getCarreras(){
+				if(carrera==null)
+        			carrera = $.ajax({
+        				url: "/wvb/ajax/carrera",dataType: "html",async: false
+        			}).responseText;
+        		divform.html(carrera);
+			}
+        </script>
+	<!--[if lte IE 7]>
+		<link href="{{ STATIC_PREFIX  }}css/yaml/patches/patch_2col_advanced.css" rel="stylesheet" type="text/css" />
+	<![endif]-->
+        <title>W.V.B. - Bienvenido</title>
+    </head>
+    <body>
+        <div class="page_margins">
+            <div class="page">
+                <div id="header" role="banner">
+                    <h1>W.V.S <em>&laquo;Sys&raquo;</em></h1>
+                    <span>Lo hacemos por ti</span>
+                </div>
+                <!-- begin: main navigation #nav -->
+                <div id="nav" role="navigation">
+                    <div class="hlist">
+                        <ul>
+                            <li><a href="#">Inicio</a></li>
+                            <li><a href="#" onclick="getPagoMenu();">Pagos</a></li>
+                            <li><a href="#" onclick="getAcademicoMenu();">Academico</a></li>
+                            <li><a href="#">Cerrar</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- end: main navigation -->
+                <!-- begin: main content area #main -->
+                <div id="main">
+                    <!-- begin: #col1 - first float column -->
+                    <div id="col1" role="complementary">
+                        <div id="col1_content" class="clearfix">
+                            <h2>Column  #col1</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam leo.  Donec massa tellus, sodales vitae, mattis a, pretium in, nisi.  Pellentesque ultrices, lacus eget volutpat commodo, lorem purus  faucibus dolor, ut faucibus ipsum tellus a elit. Pellentesque habitant  morbi tristique senectus et netus et malesuada fames ac turpis egestas.  Pellentesque ut mi sed dolor nonummy rhoncus. Duis laoreet est id  mauris dignissim porttitor. </p>
+                            <div class="subcolumns">
+                                <div class="c50l">
+                                    <div class="subcl">
+                                        <h3>Left Subcolumn </h3>
+                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam leo.  Donec massa tellus, sodales vitae, mattis a, pretium in, nisi.  Pellentesque ultrices, lacus eget volutpat commodo, lorem purus  faucibus dolor, ut faucibus ipsum tellus a elit. Pellentesque habitant  morbi tristique senectus et netus et malesuada fames ac turpis egestas.  Pellentesque ut mi sed dolor nonummy rhoncus. Duis laoreet est id  mauris dignissim porttitor. </p>
+                                        <p>Etiam ullamcorper magna et dui. Morbi  lectus metus, porta sit amet, accumsan nec, aliquet vitae, nisl. Proin  cursus tempus lectus. Ut a risus et neque ornare molestie. Nulla erat  enim, dictum in, interdum vitae, rhoncus non, ligula. Sed sollicitudin  sollicitudin turpis. Maecenas vitae neque.</p>
+                                    </div>
+                                </div>
+                                <div class="c50r">
+                                    <div class="subcr">
+                                        <h3>Right Subcolumn </h3>
+                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam leo.  Donec massa tellus, sodales vitae, mattis a, pretium in, nisi.  Pellentesque ultrices, lacus eget volutpat commodo, lorem purus  faucibus dolor, ut faucibus ipsum tellus a elit. </p>
+                                        <p>Pellentesque habitant  morbi tristique senectus et netus et malesuada fames ac turpis egestas.  Pellentesque ut mi sed dolor nonummy rhoncus. Duis laoreet est id  mauris dignissim porttitor. Etiam ullamcorper magna et dui. Morbi  lectus metus, porta sit amet, accumsan nec, aliquet vitae, nisl. Proin  cursus tempus lectus. Ut a risus et neque ornare molestie. Nulla erat  enim, dictum in, interdum vitae, rhoncus non, ligula. Sed sollicitudin  sollicitudin turpis. Maecenas vitae neque.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end: #col1 -->
+                    <!-- begin: #col3 static column -->
+                    <div id="col3" role="main">
+                        <div id="col3_content" class="clearfix">
+                            <h2>Column #col3</h2>
+                            <div class="info">
+                                <h2>About this example</h2>
+                                <p> This   <em>advanced</em> example, combines several basic layout options. </p>
+                                <p>It's a flexible 2-column layout with  <a href="http://www.yaml.de/en/documentation/practice/column-design.html">column separators</a> and it makes use of YAML <a href="http://www.yaml.de/en/documentation/practice/subtemplates.html">grid elements</a> (subtemplates) to subdivide the content in <code>#col1</code>.</p>
+                                <p>This example is explained in detail in the <a href="http://www.yaml.de/en/documentation/practice/application-examples/flexible-2-column-layout.html">documentation</a>.</p>
+                            </div>
+                        </div>
+                        <div id="ie_clearing">&nbsp;</div>
+                        <!-- End: IE Column Clearing -->
+                    </div>
+                    <!-- end: #col3 -->
+                </div>
+                <!-- end: #main -->
+                <!-- begin: #footer -->
+                <div id="footer" role="contentinfo">Licenciado bajo los terminos de la GNU GPL v.3</div>
+                <!-- end: #footer -->
+            </div>
+        </div>
+        <!-- full skiplink functionality in webkit browsers -->
+    </body>
+</html>

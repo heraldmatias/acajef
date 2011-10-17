@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}W.V.B. - Bienvenido{% endblock %}
+{% block content %}
+	<h2>Column  #col1</h2>
+	<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam leo.  Donec massa tellus, sodales vitae, mattis a, pretium in, nisi.  Pellentesque ultrices, lacus eget volutpat commodo, lorem purus  faucibus dolor, ut faucibus ipsum tellus a elit. Pellentesque habitant  morbi tristique senectus et netus et malesuada fames ac turpis egestas.  Pellentesque ut mi sed dolor nonummy rhoncus. Duis laoreet est id  mauris dignissim porttitor. </p>
+	<div class="subcolumns">
+		<div class="c50l">
+			<div class="subcl">
+				<h3>Left Subcolumn </h3>
+				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam leo.  Donec massa tellus, sodales vitae, mattis a, pretium in, nisi.  Pellentesque ultrices, lacus eget volutpat commodo, lorem purus  faucibus dolor, ut faucibus ipsum tellus a elit. Pellentesque habitant  morbi tristique senectus et netus et malesuada fames ac turpis egestas.  Pellentesque ut mi sed dolor nonummy rhoncus. Duis laoreet est id  mauris dignissim porttitor. </p>
+				<p>Etiam ullamcorper magna et dui. Morbi  lectus metus, porta sit amet, accumsan nec, aliquet vitae, nisl. Proin  cursus tempus lectus. Ut a risus et neque ornare molestie. Nulla erat  enim, dictum in, interdum vitae, rhoncus non, ligula. Sed sollicitudin  sollicitudin turpis. Maecenas vitae neque.</p>
+			</div>
+		</div>
+		<div class="c50r">
+			<div class="subcr">
+				<div>
+					{% if error_message %}
+					<div class="ui-widget">
+						<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+							<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+							<strong>Alerta:</strong> {{ error_message }}.</p>
+						</div>
+					</div>
+					{% endif %}
+					<form method="post" action="/wvb/login/" class="yform full" role="application">
+						{% csrf_token %}
+						<fieldset>
+							<legend>Ingresar</legend>
+							<div class="subcolumns">
+		  						<div class="c50l">
+		    						<div class="subcl type-text">
+										<label for="user">Usuario</label>
+										<input type="text" id="user" name="user"/>
+		  							</div>
+		  						</div>
+		  						<div class="c50r">
+		    						<div class="subcr type-text">
+		      							<label for="pass">Password</label>
+		      							<input type="password" id="pass" name="pass"/>
+		    						</div>
+		  						</div>
+							</div>
+        				</fieldset>
+        				<div class="type-button">
+          					<input type="reset" value="Limpiar" class="reset" id="reset1" name="reset1" />
+          					<input type="submit" value="Ingresar" class="submit" id="submit1" name="submit1" />
+        				</div>
+        			</form>
+        		</div>
+        	</div>
+        </div>
+	</div>
+{% endblock %}
+{% block left-bar %}
+	<h2>WVB - Sys</h2>
+    <div class="info">
+		<h2>Desarrollado por</h2>
+		<p>Miguel Ángel Cumpa Ascuña</p>
+		<p>Herald Matias Olivares Zarsoza</p>
+		<p>Cristian</p>
+	</div>
+{% endblock %}
+{% block scriptjs %}
+<script>
+	$(document).ready(function() {
+		$("#user").focus();
+	});
+</script>
+{% endblock %}
