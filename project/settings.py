@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Django settings for project project.
 
-from os.path import dirname, join, realpath
+from os.path import realpath
 
 ADMINS = (
     ('Miguel Ángel Cumpa Ascuña', 'themiseck.rock@gmail.com'),
@@ -11,9 +11,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-PROJECT_DIR = dirname(__file__)
-APPS_DIR  = realpath(join(PROJECT_DIR, 'apps'))
 
 DATABASES = {
     'default': {
@@ -51,7 +48,7 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = realpath(join(PROJECT_DIR, 'media'))
+MEDIA_ROOT = realpath('media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -62,7 +59,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = realpath(join(PROJECT_DIR, 'static'))
+STATIC_ROOT = realpath('static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -71,7 +68,7 @@ STATIC_URL = '/static/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
+ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -112,7 +109,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    realpath(join(PROJECT_DIR, 'templates')),
+    realpath('templates'),
 )
 
 INSTALLED_APPS = (
@@ -122,8 +119,12 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # grapelli app
+    'grappelli',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     # apps
@@ -131,9 +132,13 @@ INSTALLED_APPS = (
     'boleta',
     'calificacion',
     'docente',
-    'inscripcion',
+    'institucion',
     'pago',
 )
+
+GRAPPELLI_ADMIN_TITLE = 'Admin CMS for W.V.B'
+
+LOGIN_URL = '/wvb/'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
