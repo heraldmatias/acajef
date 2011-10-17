@@ -5,6 +5,8 @@ urlpatterns = patterns('home.views',
 	url(r'^home/$','home', name='wvb-home'),
 	url(r'^login/$','entrar', name='wvb-login'),
 	url(r'^logout/$','salir', name='wvb-salir'),
+	
+	# menu home's page
 	url(r'^academico/$','academico', name='wvb-academico'),
 	url(r'^pago/$','pago', name='wvb-pago'),
 )
