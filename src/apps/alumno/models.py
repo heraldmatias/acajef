@@ -16,6 +16,7 @@ class Alumno(models.Model):
     direccion        = models.TextField('Dirección', blank=True, null=True)
     foto             = models.ImageField('Foto', upload_to='alumno/', blank=True, null=True)
     apoderado        = models.CharField('Apoderado', max_length=250)
+    email            = models.EmailField('E-mail')
     matriculado      = models.BooleanField('Matriculado', default=False)
 
     class Meta:

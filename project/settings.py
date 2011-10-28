@@ -134,6 +134,9 @@ INSTALLED_APPS = (
     'docente',
     'institucion',
     'pago',
+    'home',
+    'curso',
+    'campus',
 )
 
 GRAPPELLI_ADMIN_TITLE = 'Admin CMS for W.V.B'

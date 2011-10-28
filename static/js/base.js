@@ -1,18 +1,10 @@
 var academicomenu=null;
 var pagomenu=null;
-var carrera=null;
-var divcont=null;
-var divform=null;
-var divbienvenida=null;
+var divmenu=null;
 
 function run(){
-	divcont=$("#col3_content");
-    divbienvenida=$("#col1_content");
-    divform=$("#col1");
-	$('#hierarchybreadcrumb').menu({
-		content: $('#hierarchybreadcrumb').next().html(),
-		backLink: false
-	});
+    divmenu = $("#col3_content");
+    menu();
 }
 
 function getPagoMenu(){
@@ -22,15 +14,15 @@ function getPagoMenu(){
 			dataType: "html",
 			async: false
 			}).responseText;
-	divcont.html(pagomenu);
-	menuacademico();
+	divmenu.html(pagomenu);
+	menu();
 }
 
-function menuacademico(){
+function menu(){
 	$('#hierarchybreadcrumb').menu({
 		content: $('#hierarchybreadcrumb').next().html(),
 		backLink: false
-		});
+	});
 }
 
 function getAcademicoMenu(){
@@ -40,6 +32,12 @@ function getAcademicoMenu(){
 			dataType: "html",
 			async: false
 			}).responseText;
-	divcont.html(academicomenu);
-   	menuacademico();
+	divmenu.html(academicomenu);
+   	menu();
+}
+
+function confirmar(mensaje){
+	if (confirm(mensaje))
+		return true;
+	return false;
 }

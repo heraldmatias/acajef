@@ -13,9 +13,9 @@ TIPO_CARRERA = (
 
 class Carrera(models.Model):
     carrera  = models.CharField('Carrera',max_length=150)
-    duracion = models.IntegerField('Dureción')
+    duracion = models.IntegerField('Duración')
     tipo     = models.CharField('Tipo',max_length=2, choices=TIPO_CARRERA)
-    monto    = models.DecimalField('Monto',max_digits=8,decimal_places=1)
+    precio   = models.DecimalField('Monto',max_digits=8,decimal_places=1)
     valido   = models.BooleanField('¿Valida?',default=False)
 
     def __unicode__(self):

@@ -20,6 +20,8 @@ urlpatterns = patterns('',
     
     (r'^wvb/', include('home.urls')),
     (r'^alumno/', include('alumno.urls')),
+    (r'^institucion/', include('institucion.urls')),
+    (r'^curso/', include('curso.urls')),
 )
 
 if settings.DEBUG:

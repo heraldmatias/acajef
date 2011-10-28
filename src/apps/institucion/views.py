@@ -1,26 +1,49 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from models import Carrera, Ciclo
+from forms import CarreraForm
 
+CICLOS = ('I','II','III','IV','V','VI',)
+
+@login_required(login_url='/wvb/')
 def carrera(request):
+    carrera_form = CarreraForm()
     if request.method == 'POST':
-        carrera, created = Carrera.objects.get_or_create(
-                            pk = request.POST["idcarrera"],
-                            defaults = {
-                                        'carrera'  : request.POST["idcarrera"],
-                                        'duracion' : request.POST["duracion"],
-                                        'tipo'     : request.POST["tipo"],
-                                        'monto'    : request.POST["monto"],
-                                        'valido'   : request.POST["valido"],
-                                        }
-                            )
-        carrera.save()
-        return HttpResponseRedirect('/wvb/carrera')
-	carrera_form = CarreraForm()
-	carreras = Carrera.objects.all().order_by('carrera')
-	return render(request, 'inscripcion/carrera.html', 
-	                {
-                        'carrera_form' : carrera_form ,
-                        'carreras'     :carreras,
-                    },
-                 )
+        carrera_form = CarreraForm(request.POST)
+        if carrera_form.is_valid():
+            carrera_form.save()
+            ciclos = int(request.POST["N"])-1
+            while(ciclos>=0):
+                Ciclo.objects.create(carrera=carrera_form.instance, ciclo=CICLOS[ciclos]).save()
+                ciclos-=1
+        return redirect('/institucion/carrera')
+    carreras = Carrera.objects.all().order_by('carrera')
+    return render(request,
+                'institucion/carrera.html', 
+                {'carrera_form' : carrera_form,'carreras' : carreras,},
+                )
+
+@login_required(login_url='/wvb/')
+def carrera_json(request,carrera_id):
+    json_array = []
+    carrera = Carrera.objects.get(pk=carrera_id)
+    json_array.append(carrera)
+    ciclos =  Ciclo.objects.filter(carrera=carrera)
+    for ciclo in ciclos:
+        json_array.append(ciclo)
+    json_serializer = serializers.get_serializer("json")()
+    resultado = json_serializer.serialize(json_array, ensure_ascii=False)
+    return HttpResponse(resultado,mimetype='application/json')
+
+@login_required(login_url='/wvb/')
+def cilos_json(request,carrera_id):
+    json_array = []
+    carrera = Carrera.objects.get(pk=carrera_id)
+    ciclos =  Ciclo.objects.filter(carrera=carrera).order_by('-pk')
+    for ciclo in ciclos:
+        json_array.append(ciclo)
+    json_serializer = serializers.get_serializer("json")()
+    resultado = json_serializer.serialize(json_array, ensure_ascii=False)
+    return HttpResponse(resultado,mimetype='application/json')
