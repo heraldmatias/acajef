@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -18,7 +19,7 @@ def carrera(request):
             while(ciclos>=0):
                 Ciclo.objects.create(carrera=carrera_form.instance, ciclo=CICLOS[ciclos]).save()
                 ciclos-=1
-        return redirect('/institucion/carrera')
+            return redirect('/institucion/carrera')
     carreras = Carrera.objects.all().order_by('carrera')
     return render(request,
                 'institucion/carrera.html', 

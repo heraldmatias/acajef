@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}W.V.B. - Curso{% endblock %}
+{% block content %}
+	<form method="post" action="/curso/registrar/" class="yform full" role="application" onSubmit="return confirmar('¿Esta segur@ que desea registrar el curso?');">
+		{% csrf_token %}
+		<fieldset>
+		<div class="subcolumns">
+			<div class="c50l">
+				<div class="subcl">
+				<fieldset>
+					<legend>Curso</legend>
+					<div class="subcl type-select">
+					{{ ciclo_form.carrera.errors }}
+					<label for="id_carrera">Carrera:</label>
+					{{ ciclo_form.carrera }}
+					</div>
+					<div class="subcl type-select">
+						{% if ciclos|length > 0 %}
+						<label for="id_ciclo">Ciclo:</label>
+						<select id="id_ciclo" name="ciclo">
+							{% for ciclo in ciclos %}
+								<option value="{{ ciclo.id }}">{{ ciclo.ciclo }}</option>
+							{% endfor %}
+						</select>
+						{% else %}
+							<p>No hay ciclos disponibles.</p>
+						{% endif %}
+					</div>
+					<div class="subcl type-text">
+						<label for="id_curso">Curso:</label>
+						<input type="text" name="curso" id="id_curso"/>
+					</div>
+				</fieldset>
+				</div>
+			</div>
+			<div class="c50r">
+				<div class="subcr">
+					{% if cursos|length > 0 %}
+					<fieldset>
+						<legend>Cursos</legend>
+						<ul id="cursos">
+						{% for curso in cursos %}
+						    <li>{{ curso }}</li>
+						{% endfor %}
+						</ul>
+					</fieldset>
+					{% else %}
+						<p>No hay ciclos disponibles.</p>
+					{% endif %}
+				</div>
+			</div>
+		</fieldset>
+		<div class="type-button">
+			<input type="reset" value="Nuevo" class="reset" id="reset" name="reset" />
+			<input type="submit" value="Guardar" class="submit" id="submit" name="submit" />
+		</div>
+	</form>
+{% endblock %}
+{% block left-bar %}
+    {% include 'home/academico.html' %}
+{% endblock %}
+{% block scriptjs %}
+	<script src="{{ STATIC_URL  }}js/base.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL  }}js/jquery.tablesorter.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL  }}js/jquery.selectboxes.js" type="text/javascript"></script>
+	<script>
+		var ciclos = null;
+		var cursos = null;
+		$(document).ready(function() {
+			cursos=$("#cursos");
+			ciclos = $("#id_ciclo");
+			run();
+			$( "#tabs" ).tabs();
+			ciclos.change(function(){
+				setCiclos(this.value);
+			});
+			$("#id_carrera option[value=1]").attr("selected",true);
+			$("#id_carrera").change(function() {
+				ciclos.removeOption(/./);
+				$.getJSON("/institucion/ciclos/"+this.value+"/json/", function(data){
+					var val = null;
+					$.each(data, function(key, value){
+						if(key==0){
+							setCiclos(value.pk);
+							val = value.pk;
+						}
+						ciclos.addOption(value.pk, value.fields.ciclo);
+					});
+					ciclos.find('option').first().attr('selected',true);
+				});
+				
+			});
+		});
+		function setCiclos(val){
+			cursos.html($.ajax({
+					url: "/curso/"+val+"/ajax/",dataType: "html",async: false
+				}).responseText);
+		}
+	</script>
+{% endblock %}

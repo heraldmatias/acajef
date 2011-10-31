@@ -7,6 +7,10 @@ class Curso(models.Model):
     ciclo = models.ForeignKey(Ciclo)
     curso = models.CharField('Curso', max_length=30)
 
+    class Meta:
+        verbose_name = "Curso"
+        verbose_name_plural = "Cursos"
+
     def __unicode__(self):
         return u'%s' % (self.curso)
 

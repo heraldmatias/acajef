@@ -1,0 +1,6 @@
+{% for curso in cursos %}
+<li>
+    {{ curso.curso }}
+</li>
+{% endfor %}
+<label>N° de cursos: {{ cursos|length }}</label>

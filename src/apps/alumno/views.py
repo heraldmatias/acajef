@@ -10,7 +10,7 @@ def alumno(request):
         alumno_form = AlumnoForm(request.POST, request.FILES)
         if alumno_form.is_valid():
             alumno_form.save()
-            return redirect('alumno')
+            return redirect('/alumno/registrar/')
     return render(request,
                     'alumno/alumno.html', 
                     { 'alumno_form': alumno_form })

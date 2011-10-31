@@ -26,6 +26,6 @@ class Ciclo(models.Model):
     ciclo   = models.CharField('Ciclo',max_length=100)
 
     def __unicode__(self):
-        return u'%s' % self.ciclo
+        return u'%s %s' % (self.carrera, self.ciclo)
 
 

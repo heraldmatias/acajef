@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block title %}W.V.B. - Docente{% endblock %}
+{% block content %}
+	<div id="tabs">
+		<ul>
+			<li><a href="#tabs-1">Docentes</a></li>
+			<li><a href="#tabs-2">Docente</a></li>
+			<li><a href="#tabs-3">Inactivos</a></li>
+		</ul>
+		<form method="post" action="/docente/registrar/" class="yform full" role="application" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div id="tabs-1">
+				<fieldset>
+					<legend>Docente</legend>
+					{% if docentes_activos %}
+						<table id="tdocente">
+							<thead>
+								<tr>
+									<th>D.N.I.</th><th>Apellidos</th><th>Nombres</th><th>Celular</th><th>Activo</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for docente in docentes_activos %}
+								<tr>
+									<td><a href="#" onclick="getDocente({{ docente.id }});">{{ docente.dni }}</a></td>
+									<td>{{ docente.apellido }}</td><td>{{ docente.nombre }}</td>
+									<td>{{ docente.celular }}</td>
+									<td>
+										<a href="/media/{{ docente.curriculum }}"><img alt="curriculum del docente" src="{{ STATIC_URL  }}images/curriculum.png"/></a>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+							<tfoot>
+								<tr>
+									<th>Número de docentes:</th>
+									<th colspan="3">{{ docentes_activos|length }}</th>
+								</tr>
+							</tfoot>
+						</table>
+					{% else %}
+						<p>No hay docentes registrados.</p>
+					{% endif %}
+				</fieldset>
+			</div>
+			<div id="tabs-2">
+				<fieldset>
+					<legend>Carrera</legend>
+					<div class="subcolumns">
+						<div class="c50l">
+							<div class="subcl type-text">
+							{{ docente_form.dni.errors }}
+							<label for="id_dni">DNI:</label>
+							{{ docente_form.dni }}
+							</div>
+							<div class="subcl type-text">
+							{{ docente_form.nombre.errors }}
+							<label for="id_nombre">Nombre:</label>
+							{{ docente_form.nombre }}
+							</div>
+							<div class="subcl type-text">
+							{{ docente_form.apellido.errors }}
+							<label for="id_apellido">Apellido:</label>
+							{{ docente_form.apellido }}
+							</div>
+							<div class="subcl type-text">
+								{{ docente_form.email.errors }}
+								<label for="id_email">E-mail:</label>
+								{{ docente_form.email }}
+							</div>
+							<div class="subcl type-text">
+							{{ docente_form.celular.errors }}
+							<label for="id_celular">Celular:</label>
+							{{ docente_form.celular }}
+							</div>
+						</div>
+						<div class="c50r">
+							<div class="subcr type-text">
+								{{ docente_form.fijo.errors }}
+								<label for="id_fijo">Fijo</label>
+								{{ docente_form.fijo }}
+							</div>
+							<div class="subcl type-text">
+								{{ docente_form.direccion.errors }}
+								<label for="id_direccion">Direccion</label>
+								{{ docente_form.direccion }}
+							</div>
+							<div class="subcr type-check">
+								<div>
+									{{ docente_form.activo.errors }}
+									<label for="id_activo">Activo</label>
+									{{ docente_form.activo }}
+								</div>
+							</div>
+							<div class="subcl type-text">
+								{{ docente_form.curriculum.errors }}
+								<label for="id_curriculum">Curriculum</label>
+								{{ docente_form.curriculum }}
+							</div>
+						</div>
+					</div>
+				</fieldset>
+				<div class="type-button">
+					<input type="reset" value="Nuevo" class="reset" id="reset" name="reset" />
+					<input type="submit" value="Guardar" class="submit" id="submit" name="submit" />
+				</div>
+			</div>
+			<div id="tabs-3">
+				<fieldset>
+					<legend>Docente Inactivos</legend>
+					{% if docentes_inactivos %}
+					<table>
+						<tr>
+							<th>D.N.I.</th><th>Apellidos</th><th>Nombres</th><th>Celular</th><th>Activo</th>
+						</tr>
+						{% for docente in docentes_inactivos %}
+						<tr>
+							<td><a href="#">{{ docente.dni }}</a></td>
+							<td>{{ docente.apellido }}</td><td>{{ docente.nombre }}</td>
+							<td>{{ docente.celular }}</td>
+							<td>{{ docente.curriculum }}</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% else %}
+						<p>No hay docentes inactivos registrados.</p>
+					{% endif %}
+				</fieldset>
+			</div>
+		</form>
+	</div>
+{% endblock %}
+{% block left-bar %}
+    {% include 'home/academico.html' %}
+{% endblock %}
+{% block scriptjs %}
+	<script src="{{ STATIC_URL  }}js/base.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL  }}js/jquery.tablesorter.js" type="text/javascript"></script>
+	<script>
+		var tabs = null;
+		$(document).ready(function() {
+			run();
+			$("#tabs").tabs();
+			$("#id_direccion").attr("rows","1");
+			$("#tdocente").tablesorter();
+			tabs = $("#tabs").tabs();
+		});
+		function getDocente(iddocente){
+			$.getJSON("/docente/"+iddocente+"/json/",function(data){
+				$.each(data,function(key, value){
+					$("#id_dni").val(value.fields.dni);
+					$("#id_nombre").val(value.fields.nombre);
+					$("#id_apellido").val(value.fields.apellido);
+					$("#id_celular").val(value.fields.celular);
+					$("#id_fijo").val(value.fields.fijo);
+					$("#id_direccion").val(value.fields.direccion);
+					$("#id_activo").attr("checked",value.fields.activo)
+				 });
+			 });
+		    tabs.tabs('select', 1);
+		}
+	</script>
+{% endblock %}
