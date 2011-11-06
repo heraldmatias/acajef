@@ -6,7 +6,7 @@ App for Alumno
 """
 
 class Alumno(models.Model):
-    codigo           = models.CharField('Codigo', max_length=10, blank=True, null=True)
+    codigo           = models.CharField('Código', max_length=10, blank=True, null=True)
     apellido         = models.CharField('Apellido', max_length=200)
     nombre           = models.CharField('Nombre', max_length=200)
     dni              = models.CharField('D.N.I.', max_length=8, unique=True)
@@ -22,7 +22,7 @@ class Alumno(models.Model):
     class Meta:
         verbose_name = 'Alumno'
         verbose_name_plural = 'Alumnos'
-        unique_together = (('apellido', 'nombre','codigo'),)
+        unique_together = (('apellido', 'nombre','codigo','dni'),)
 
     def __unicode__(self):
         return u'%s,  %s' % (self.apellido, self.nombre)

@@ -23,7 +23,7 @@
 							{% endfor %}
 						</select>
 						{% else %}
-							<p>No hay ciclos disponibles.</p>
+							<p>No hay cursos disponibles.</p>
 						{% endif %}
 					</div>
 					<div class="subcl type-text">
@@ -35,18 +35,19 @@
 			</div>
 			<div class="c50r">
 				<div class="subcr">
-					{% if cursos|length > 0 %}
 					<fieldset>
 						<legend>Cursos</legend>
-						<ul id="cursos">
-						{% for curso in cursos %}
-						    <li>{{ curso }}</li>
-						{% endfor %}
-						</ul>
+						{% if cursos|length > 0 %}
+							<ul id="cursos">
+							{% for curso in cursos %}
+								<li>{{ curso }}</li>
+							{% endfor %}
+							<label>N° de cursos: {{ cursos|length }}</label>
+							</ul>
+						{% else %}
+							<p>No hay cursos disponibles.</p>
+						{% endif %}
 					</fieldset>
-					{% else %}
-						<p>No hay ciclos disponibles.</p>
-					{% endif %}
 				</div>
 			</div>
 		</fieldset>
@@ -81,17 +82,16 @@
 					var val = null;
 					$.each(data, function(key, value){
 						if(key==0){
-							setCiclos(value.pk);
+							setCurso(value.pk);
 							val = value.pk;
 						}
 						ciclos.addOption(value.pk, value.fields.ciclo);
 					});
 					ciclos.find('option').first().attr('selected',true);
 				});
-				
 			});
 		});
-		function setCiclos(val){
+		function setCurso(val){
 			cursos.html($.ajax({
 					url: "/curso/"+val+"/ajax/",dataType: "html",async: false
 				}).responseText);

@@ -3,6 +3,10 @@ from institucion.models import Ciclo
 from docente.models import Docente
 from campus.models import Campus
 
+"""
+App for Curso
+"""
+
 class Curso(models.Model):
     ciclo = models.ForeignKey(Ciclo)
     curso = models.CharField('Curso', max_length=30)

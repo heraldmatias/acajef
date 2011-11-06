@@ -2,7 +2,7 @@
 from django.db import models
 
 """
-App for Inscripcion
+App for Institución
 """
 
 TIPO_CARRERA = (

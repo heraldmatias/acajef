@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('campus.views',
 	url(r'^crear/$','campus', name='campus-registrar'),
+	url(r'^listar/$','campus_listar', name='campus-listar'),
 	#(r'^registro-academico/$','wvbacademico.views.registro_academico'),
 	#(r'^form/campus/$','wvbacademico.views.campus'),
 	#(r'^json/boleta-campus/(?P<codigo_alumno>\d+)/$','wvbacademico.views.alumno_boleta_json'),

@@ -1,0 +1,20 @@
+<div class="c50l">
+	<label for="id_ciclo">Curso:</label>
+	{% for curso in ciclo.curso_set.all %}
+		<div class="subcl type-text">
+			{{ campus_form.fecha_fin.errors }}
+			<input type="hidden" name="cursos" value="{{ curso.id }}">
+			<input type="text" value="{{ curso.curso }}" readonly="readonly">
+		</div>           		        
+	{% endfor %}
+</div>
+<div class="c50r">
+	<label for="id_ciclo">Docente:</label>
+	<div class="subcl type-select">
+		<select id="id_docente_{{ docente.id }}" name="docente">
+			{% for docente in docentes %}
+			<option value="{{ docente.id }}">{{ docente }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>

@@ -4,6 +4,7 @@ from django.db import models
 """
 App for Docente
 """
+
 class Docente(models.Model):
     nombre     = models.CharField('Nombre', max_length=150)
     apellido   = models.CharField('Apellido', max_length=150)
