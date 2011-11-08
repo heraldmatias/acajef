@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.utils import simplejson
+from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from institucion.forms import CicloForm
-from institucion.models import Carrera
+from institucion.models import Carrera, Ciclo
+from pago.models import Monto, Pension, Pago
 from docente.models import Docente
+from curso.models import Curso, CursoDocente
 from alumno.models import Alumno
-from models import Campus
-from forms import CampusForm
+from models import Campus, AlumnosCampus
+from forms import CampusForm, CampusSearchForm
+import datetime
 
 code = "000000"
 
@@ -15,36 +20,40 @@ code = "000000"
 def campus(request):
     if request.method == 'POST':
         arr_obj=[]
-        ciclo = Ciclo.objects.get(pk=request.POST["ciclo"])
+        fecha_inicio = datetime.datetime.strptime(str(request.POST["fecha_inicio"]),'%d/%m/%Y'),
+        fecha_fin = datetime.datetime.strptime(str(request.POST["fecha_fin"]),'%d/%m/%Y'),
+        ciclo = Ciclo.objects.get(pk = request.POST["ciclo"])
         campus = Campus.objects.create(
                      ciclo = ciclo,
                      seccion = request.POST["seccion"],
-                     semestre=request.POST["semestre"],
-                     fecha_inicio = datetime.datetime.strptime(str(request.POST["fecha_inicio"]),'%m/%d/%Y'),
-                     fecha_fin = datetime.datetime.strptime(str(request.POST["fecha_fin"]),'%m/%d/%Y'),
-                     turno=request.POST["turno"])
+                     semestre = 1 if (fecha_inicio[0].month <=6) else 2,
+                     fecha_inicio = fecha_inicio[0],
+                     fecha_fin = fecha_fin[0],
+                     turno = request.POST["turno"])
         arr_obj.append(campus)
         cursos = request.POST.getlist("cursos")
         matriculas = request.POST.getlist("matricular")
         decentes = request.POST.getlist("docente")
-        for index,asignatura in enumerate(cursos):
+        for index in range(0, len(cursos)):
             curso_docente = CursoDocente.objects.create(
-                                curso = Curso.objects.get(pk=asignatura),
-                                docente=Docente.objects.get(pk=decentes[index]),
-                                campus=campus)
+                                curso = Curso.objects.get(pk=cursos[index]),
+                                docente = Docente.objects.get(pk=decentes[index]),
+                                campus = campus)
             arr_obj.append(curso_docente)
         for matricula in matriculas:
             monto_alumno = Monto.objects.create(
-                               deuda = ciclo.carrera.monto*ciclo.carrera.duracion,
+                               deuda = ciclo.carrera.precio*ciclo.carrera.duracion,
                                total = 0,
                                n_pension = 0,
                                n_pago = 0,)
             arr_obj.append(monto_alumno)
-            mt = 1
-            while mt <= monto_alumno.cantidad:
-                pension = Pension.objects.create(monto=monto_alumno,total = 0,fecha_vencimiento = datetime.date.today(),saldo = carrera.monto)
-                arr_obj.append(pension)
-                mt+=1
+            for i in range(0, ciclo.carrera.duracion):
+				pension = Pension.objects.create(
+							  monto = monto_alumno,
+							  total = 0,
+							  fecha_vencimiento = datetime.date.today(),
+							  saldo = ciclo.carrera.precio)
+				arr_obj.append(pension)
             alumno = Alumno.objects.get(pk=matricula)
             if not alumno.matriculado:
                 alumno.matriculado = True
@@ -55,8 +64,9 @@ def campus(request):
             arr_obj.append(alumno_campus)
         for objeto in arr_obj:
             objeto.save()
-        return redirect('/wvb/campus')
+        return redirect('/campus/listar/')
     campus_form = CampusForm()
+    campus_search_form = CampusSearchForm()
     ciclo_form = CicloForm()
     carrera = Carrera.objects.get(pk=1)
     ciclos = carrera.ciclo_set.all().order_by('-pk')
@@ -64,7 +74,7 @@ def campus(request):
     alumnos_no_matriculados = Alumno.objects.filter(matriculado=False)
     return render(request,
                     'campus/campus.html',
-                    { 'campus_form': campus_form,"ciclo_form":ciclo_form,"carrera":carrera,"docentes":docentes,"alumnos_no_matriculados":alumnos_no_matriculados,'ciclos':ciclos })
+                    { 'campus_form': campus_form, "campus_search_form" : campus_search_form, "ciclo_form":ciclo_form,"carrera":carrera,"docentes":docentes,"alumnos_no_matriculados":alumnos_no_matriculados,'ciclos':ciclos })
 
 @login_required(login_url='/wvb/')
 def campus_listar(request):
@@ -78,3 +88,18 @@ def campus_listar(request):
                     'campus/campus-listar.html',
                     { 'campus_form': campus_form,"ciclo_form":ciclo_form,"carrera":carrera,"docentes":docentes,"alumnos_no_matriculados":alumnos_no_matriculados })
 
+@login_required(login_url='/wvb/')
+def campus_matriculado(request, carrera_id, ano, turno):
+    ciclos = Carrera.objects.get(pk=carrera_id).ciclo_set.all()
+    campus_get = Campus.objects.filter(ciclo__in = ciclos, fecha_inicio__year = ano,turno = turno)
+    json_serializer = serializers.get_serializer("json")()
+    json_array = [{ "ciclo" : campus.ciclo.ciclo , "seccion" : campus.seccion, "id" : campus.pk  } for campus in campus_get]
+    return HttpResponse(simplejson.dumps(json_array),mimetype='application/json')
+
+@login_required(login_url='/wvb/')
+def campus_matriculado_alumno(request, campus_id):
+    campus = Campus.objects.get(pk = campus_id)
+    campus_alumno_get = AlumnosCampus.objects.filter(campus = campus)
+    json_serializer = serializers.get_serializer("json")()
+    json_array = [{ "id" : campus.alumno.pk , "dni" : campus.alumno.dni, "nombre" : campus.alumno.nombre, "apellido" : campus.alumno.apellido } for campus in campus_alumno_get]
+    return HttpResponse(simplejson.dumps(json_array),mimetype='application/json')

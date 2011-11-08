@@ -6,7 +6,7 @@ from django.core import serializers
 from models import Carrera, Ciclo
 from forms import CarreraForm
 
-CICLOS = ('I','II','III','IV','V','VI',)
+CICLOS = ('I','II','III','IV','V','VI','VII','VIII','IX','X',)
 
 @login_required(login_url='/wvb/')
 def carrera(request):
@@ -17,7 +17,9 @@ def carrera(request):
             carrera_form.save()
             ciclos = int(request.POST["N"])-1
             while(ciclos>=0):
-                Ciclo.objects.create(carrera=carrera_form.instance, ciclo=CICLOS[ciclos]).save()
+                Ciclo.objects.create(
+                    carrera = carrera_form.instance,
+                    ciclo = CICLOS[ciclos]).save()
                 ciclos-=1
             return redirect('/institucion/carrera')
     carreras = Carrera.objects.all().order_by('carrera')

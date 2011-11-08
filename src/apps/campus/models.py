@@ -22,11 +22,12 @@ SEMESTRE = (
 SECCION = (
     ('Aula', (
             (1, 'A'),
-            (2, 'C'),
-            (3, 'D'),
-            (4, 'E'),
-            (5, 'F'),
-            (6, 'G'),
+            (2, 'B'),
+            (3, 'C'),
+            (4, 'D'),
+            (5, 'E'),
+            (6, 'F'),
+            (7, 'G'),
         )
     ),
     ('Laboratorio', (
@@ -53,6 +54,7 @@ class Campus(models.Model):
         return u'%s - %s' % (self.turno,self.seccion)
 
 class AlumnosCampus(models.Model):
-    alumno = models.ForeignKey(Alumno)
-    campus = models.ForeignKey(Campus)
-    monto  = models.ForeignKey(Monto)
+    alumno     = models.ForeignKey(Alumno)
+    campus     = models.ForeignKey(Campus)
+    monto      = models.ForeignKey(Monto)
+    confirmado = models.BooleanField('¿Confirmado?', default = False)
