@@ -9,8 +9,8 @@ class Boleta(models.Model):
     concepto      = models.CharField('Concepto', max_length=250)
     fecha_emision = models.DateTimeField('Fecha de emisión', )
     valido        = models.BooleanField('¿Valida?', default=True)
-    monto         = models.DecimalField('Monto', max_digits=8,decimal_places=1)
-    saldo         = models.DecimalField('Saldo', max_digits=8,decimal_places=1)
+    precio        = models.DecimalField('Monto', max_digits=8,decimal_places=1)
+    saldo         = models.DecimalField('Precio', max_digits=8,decimal_places=1)
     observacion   = models.TextField('Observación', blank=True,null=True)
 
     def __unicode__(self):

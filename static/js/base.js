@@ -1,39 +1,39 @@
-var academicomenu=null;
-var pagomenu=null;
-var divmenu=null;
+var academicofdMenu=null;
+var pagofdMenu=null;
+var divfdMenu=null;
 
 function run(){
-    divmenu = $("#col3_content");
-    menu();
+    divfdMenu = $("#col3_content");
+    fdMenu();
 }
 
-function getPagoMenu(){
-	if(pagomenu==null)
-		pagomenu = $.ajax({
+function getPagofdMenu(){
+	if(pagofdMenu==null)
+		pagofdMenu = $.ajax({
 			url: "/wvb/pago",
 			dataType: "html",
 			async: false
 			}).responseText;
-	divmenu.html(pagomenu);
-	menu();
+	divfdMenu.html(pagofdMenu);
+	fdMenu();
 }
 
-function menu(){
-	$('#hierarchybreadcrumb').menu({
+function fdMenu(){
+	$('#hierarchybreadcrumb').fdmenu({
 		content: $('#hierarchybreadcrumb').next().html(),
 		backLink: false
 	});
 }
 
-function getAcademicoMenu(){
-	if(academicomenu==null)
-		academicomenu = $.ajax({
+function getAcademicofdMenu(){
+	if(academicofdMenu==null)
+		academicofdMenu = $.ajax({
 			url: "/wvb/academico",
 			dataType: "html",
 			async: false
 			}).responseText;
-	divmenu.html(academicomenu);
-   	menu();
+	divfdMenu.html(academicofdMenu);
+   	fdMenu();
 }
 
 function confirmar(mensaje){

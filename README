@@ -3,7 +3,11 @@ Instalación
 ------------------------
 - python bootstrap.py -d
 - bin/buildout -vvv
-- Copia el framework css YAML a la carpera static/css
-	http://www.yaml.de/en/
 - Recuerda que usamos grappelli
 	http://readthedocs.org/docs/django-grappelli/en/latest/quickstart.html#installation
+
+------------------------
+Tareas
+------------------------
+Herald
+	Implementar un trigger que cuando anulen una boleta 

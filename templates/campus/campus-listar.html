@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}W.V.B. - Campus{% endblock %}
+{% block csspage %}
+	<link href="{{ STATIC_URL  }}css/jquery.treeTable.css" rel="stylesheet" type="text/css" />
+	<style>
+		#toolbar {
+			padding: 10px 4px;
+		}
+	</style>
+{% endblock %}
+{% block content %}
+	<form method="post" action="/campus/registrar/" class="yform full" role="application" onSubmit="return confirmar('¿Esta segur@ que desea registrar el campus?');">
+		{% csrf_token %}
+		{% if not campusalumno %}
+			<fieldset>
+				<legend>Campus</legend>
+				<div class="subcolumns">
+					<div class="c50l">
+						<div class="subcl type-select">
+							<label for="id_search_carrera">Carrera:</label>
+							{{ campus_search_form.search_carrera }}
+						</div>
+						<div class="subcl type-select">
+							{% if ciclos|length > 0 %}
+								<label for="id_ciclo">Ciclo:</label>
+								<select id="id_ciclo" name="ciclo">
+									{% for ciclo in ciclos %}
+									<option value="{{ ciclo.id }}">{{ ciclo.ciclo }}</option>
+									{% endfor %}
+								</select>
+							{% else %}
+								<p>No hay ciclos disponibles.</p>
+							{% endif %}
+						</div>
+					</div>
+					<div class="c50r">
+						<div class="subcl type-select">
+							<label for="id_search_years">Año:</label>
+							{{ campus_search_form.search_years }}
+						</div>
+						<div class="subcl type-select">
+							<label for="id_search_turno">Turno:</label>
+							{{ campus_search_form.search_turno }}
+						</div>
+						<div class="subcr type-select">
+							<label for="id_search_semestre">Semestre:</label>
+							{{ campus_search_form.search_semestre }}
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<div class="type-button">
+				<input type="button" value="Buscar Campus" class="button" id="search_campus" name="search_campus" />
+			</div>
+		{% endif %}
+		<fieldset>
+			<table id="talumnos">
+				<thead>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+				</thead>
+				<tbody>
+					{% if campusalumno %}
+						<tr id='node-1'>
+							<td>{{ campusalumno.0.campus.ciclo.carrera }}</td>
+							<td>{{ campusalumno.0.campus.ciclo.ciclo }} - {{ campusalumno.0.campus.get_seccion }}</td>
+							<td>{{ campusalumno.0.campus.get_turno }}</td>
+							
+						</tr>
+						{% for campus_alumno in campusalumno %}
+							<tr class="child-of-node-1">
+								<td>{{ campus_alumno.alumno.dni }}</td>
+								<td>{{ campus_alumno.alumno.nombre }}</td>
+								<td>{{ campus_alumno.alumno.apellido }}</td>
+							</tr>
+						{% endfor %}
+					{% endif %}
+				</tbody>
+			</table>
+		</fieldset>
+	</form>
+{% endblock %}
+{% block left-bar %}
+    {% include 'home/academico.html' %}
+{% endblock %}
+{% block scriptjs %}
+	<script src="{{ STATIC_URL  }}js/base.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL  }}js/jquery.selectboxes.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL  }}js/jquery.treeTable.js" type="text/javascript"></script>
+	<script>
+		var ciclos = null;
+		var talumnos = null;
+		$(document).ready(function() {
+			run();
+			ciclos = $("#id_ciclo");
+			talumnos = $("#talumnos").treeTable();
+			$("#search_campus").button({
+				text:true,
+				icons:{
+					primary: "ui-icon-check"
+				}
+			}).click(function(){
+				getAlumnosMatriculados();
+			});
+			$("#id_turno option[value=1]").attr("selected",true);
+			$("#id_carrera option[value=1]").attr("selected",true);
+			$("#id_carrera").change(function() {
+				ciclos.removeOption(/./);
+				$.getJSON("/institucion/ciclos/"+this.value+"/json/", function(data){
+					var val = null;
+					$.each(data, function(key, value){
+						if(key==0){
+							val = value.pk;
+						}
+						ciclos.addOption(value.pk, value.fields.ciclo);
+					});
+					ciclos.find('option').first().attr('selected',true);
+				});
+			});
+		});
+		function sortoptions(sort){
+			var $this = $(this);
+			$this.sortOptions(sort.dir == "asc" ? true : false);
+		}
+		function getAlumnosMatriculados(){
+			seccion = $("#id_seccion").val();
+			fecha_incio = $("#id_fecha_inicio").val().replace(/[/]/g,"");
+			semestre = $("#semestreI").checked ? $("#semestreI").val() : $("#semestreII").val();
+		}
+	</script>
+{% endblock %}

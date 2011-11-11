@@ -2,7 +2,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.utils import simplejson
-from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from institucion.forms import CicloForm
 from institucion.models import Carrera, Ciclo
@@ -64,7 +63,7 @@ def campus(request):
             arr_obj.append(alumno_campus)
         for objeto in arr_obj:
             objeto.save()
-        return redirect('/campus/listar/')
+        return redirect('/campus/nuevo/listar/'+str(campus.pk)+'/')
     campus_form = CampusForm()
     campus_search_form = CampusSearchForm()
     ciclo_form = CicloForm()
@@ -78,21 +77,28 @@ def campus(request):
 
 @login_required(login_url='/wvb/')
 def campus_listar(request):
-    campus_form = CampusForm()
-    ciclo_form = CicloForm()
+    campus_search_form = CampusSearchForm()
     carrera = Carrera.objects.get(pk=1)
     ciclos = carrera.ciclo_set.all().order_by('-pk')
-    docentes = Docente.objects.filter(activo=True)
-    alumnos_no_matriculados = Alumno.objects.filter(matriculado=False)
     return render(request,
                     'campus/campus-listar.html',
-                    { 'campus_form': campus_form,"ciclo_form":ciclo_form,"carrera":carrera,"docentes":docentes,"alumnos_no_matriculados":alumnos_no_matriculados })
+                    { 'campus_search_form': campus_search_form,"ciclos":ciclos, })
+
+@login_required(login_url='/wvb/')
+def campus_new_listar(request, campus_id):
+    campus_search_form = CampusSearchForm()
+    campus = Campus.objects.get(pk = campus_id)
+    campusalumno = AlumnosCampus.objects.filter(campus = campus)
+    carrera = Carrera.objects.get(pk=1)
+    ciclos = carrera.ciclo_set.all().order_by('-pk')
+    return render(request,
+                    'campus/campus-listar.html',
+                    {'campus_search_form' : campus_search_form, "ciclos" : ciclos, 'campusalumno' : campusalumno, })
 
 @login_required(login_url='/wvb/')
 def campus_matriculado(request, carrera_id, ano, turno):
     ciclos = Carrera.objects.get(pk=carrera_id).ciclo_set.all()
     campus_get = Campus.objects.filter(ciclo__in = ciclos, fecha_inicio__year = ano,turno = turno)
-    json_serializer = serializers.get_serializer("json")()
     json_array = [{ "ciclo" : campus.ciclo.ciclo , "seccion" : campus.seccion, "id" : campus.pk  } for campus in campus_get]
     return HttpResponse(simplejson.dumps(json_array),mimetype='application/json')
 
@@ -100,6 +106,5 @@ def campus_matriculado(request, carrera_id, ano, turno):
 def campus_matriculado_alumno(request, campus_id):
     campus = Campus.objects.get(pk = campus_id)
     campus_alumno_get = AlumnosCampus.objects.filter(campus = campus)
-    json_serializer = serializers.get_serializer("json")()
     json_array = [{ "id" : campus.alumno.pk , "dni" : campus.alumno.dni, "nombre" : campus.alumno.nombre, "apellido" : campus.alumno.apellido } for campus in campus_alumno_get]
     return HttpResponse(simplejson.dumps(json_array),mimetype='application/json')

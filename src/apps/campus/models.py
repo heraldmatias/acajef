@@ -8,26 +8,26 @@ from pago.models import Monto
 App for Campus
 """
 
-TIPO_TURNO = (
-    ('1', 'Mañana'),
-    ('2', 'Tarde'),
-    ('3', 'Noche'),
+TURNO = (
+    (0, 'Mañana'),
+    (1, 'Tarde'),
+    (2, 'Noche'),
 )
 
 SEMESTRE = (
-    (1, 'I'),
-    (2, 'II'),
+    (0, 'I'),
+    (1, 'II'),
 )
 
 SECCION = (
     ('Aula', (
-            (1, 'A'),
-            (2, 'B'),
-            (3, 'C'),
-            (4, 'D'),
-            (5, 'E'),
-            (6, 'F'),
-            (7, 'G'),
+            (0, 'A'),
+            (1, 'B'),
+            (2, 'C'),
+            (3, 'D'),
+            (4, 'E'),
+            (5, 'F'),
+            (6, 'G'),
         )
     ),
     ('Laboratorio', (
@@ -44,7 +44,7 @@ class Campus(models.Model):
     semestre     = models.IntegerField('Semestre', choices=SEMESTRE)
     fecha_inicio = models.DateField('Fecha de Inicio')
     fecha_fin    = models.DateField('Fecha de Fin')
-    turno        = models.CharField('Turno',max_length=2, choices=TIPO_TURNO)
+    turno        = models.IntegerField('Turno', choices=TURNO)
 
     class Meta:
         verbose_name = "Campus"
@@ -52,6 +52,13 @@ class Campus(models.Model):
 
     def __unicode__(self):
         return u'%s - %s' % (self.turno,self.seccion)
+
+    def get_turno(self):
+        return u'%s' % TURNO[self.turno][1]
+
+    def get_seccion(self):
+        t = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'LAB. 1', 'LAB. 2', 'LAB. 3',]
+        return u'%s' % t[self.seccion]
 
 class AlumnosCampus(models.Model):
     alumno     = models.ForeignKey(Alumno)

@@ -191,6 +191,7 @@
 		var n_alumnos = 0;
 		var year = new Date().getFullYear()+1;
 		var cell_count = null;
+		var seccion = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'LAB. 1', 'LAB. 2', 'LAB. 3'];
 		$(document).ready(function() {
 			run();
 			$("#id_fecha_inicio").datepicker({
@@ -310,7 +311,7 @@
 		function setAulas(){
 			$.getJSON("/campus/matriculado/"+$("#id_search_carrera").val()+"-"+$("#id_search_years").val()+"-"+$("#id_search_turno").val()+"/json/", function(data){
 				$.each(data, function(key, value){
-					$("#alumnos_matriculados tbody").append("<tr><td>"+value.ciclo+"</td><td>"+value.seccion+"</td><td><input type='radio' name='matricular' ondblclick='setAlumnosMatriculados(this.value);' value='"+value.id+"'/></td></tr>");
+					$("#alumnos_matriculados tbody").append("<tr><td>"+value.ciclo+"</td><td>"+seccion[value.seccion+1]+"</td><td><input type='radio' name='matricular' ondblclick='setAlumnosMatriculados(this.value);' value='"+value.id+"'/></td></tr>");
 				});
 			});
 		}
