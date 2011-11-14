@@ -17,7 +17,7 @@ def carrera(request):
             carrera_form.save()
             ciclos = int(request.POST["N"])
             for i in range(0,ciclos):
-                Ciclo.objects.create(carrera = carrera_form.instance, ciclo = CICLOS[ciclos]).save()
+                Ciclo.objects.create(carrera = carrera_form.instance, ciclo = CICLOS[i]).save()
             Ciclo.objects.create(carrera = carrera_form.instance,ciclo = 'Egresado').save()
             return redirect('/institucion/carrera')
     carreras = Carrera.objects.all().order_by('carrera')
@@ -42,7 +42,7 @@ def carrera_json(request,carrera_id):
 def cilos_json(request,carrera_id):
     json_array = []
     carrera = Carrera.objects.get(pk=carrera_id)
-    ciclos =  Ciclo.objects.filter(carrera=carrera).order_by('-pk')
+    ciclos =  Ciclo.objects.filter(carrera=carrera).order_by('pk')
     for ciclo in ciclos:
         json_array.append(ciclo)
     json_serializer = serializers.get_serializer("json")()

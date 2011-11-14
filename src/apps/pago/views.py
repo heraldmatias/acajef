@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from decimal import Decimal
 from models import Pension
+from django.contrib.auth.decorators import login_required
 from boleta.models import Boleta
 from boleta.views import get_serie_numero
 from alumno.models import Alumno
@@ -10,6 +11,7 @@ from models import Pension
 from boleta.forms import BoletaForm
 import datetime
 
+@login_required(login_url='/wvb/')
 def pago_pension(request):
     if request.method == 'POST':
         numero_serie = get_serie_numero()
@@ -35,6 +37,7 @@ def pago_pension(request):
     numero_serie = get_serie_numero()
     return render(request, 'pago/pago_pension.html', { 'numero_serie': numero_serie, },)
 
+@login_required(login_url='/wvb/')
 def pago_subsanacion(request):
     if request.method == 'POST':
         numero_serie = get_serie_numero()
@@ -58,6 +61,7 @@ def pago_subsanacion(request):
     docentes = Docente.objects.filter(activo=True)
     return render(request, 'pago/pago_nota.html', { 'numero_serie': numero_serie, 'docentes':docentes,},)
 
+@login_required(login_url='/wvb/')
 def pago_general(request):
     if request.method == 'POST':
         numero_serie = get_serie_numero()
@@ -79,6 +83,7 @@ def pago_general(request):
     boleta_form = BoletaForm()
     return render(request, 'pago/pago_general.html', { 'numero_serie': numero_serie, 'boleta_form' : boleta_form},)
 
+@login_required(login_url='/wvb/')
 def anular(request):
     if request.method == 'POST':
         if tipo_boleta == 0:

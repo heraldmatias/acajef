@@ -9,7 +9,7 @@
 	</style>
 {% endblock %}
 {% block content %}
-	<form method="post" action="/campus/registrar/" class="yform full" role="application" onSubmit="return confirmar('¿Esta segur@ que desea registrar el campus?');">
+	<form method="post" action="#" class="yform full" role="application">
 		{% csrf_token %}
 		{% if not campusalumno %}
 			<fieldset>
@@ -59,7 +59,7 @@
 					<th colspan="3">
 						<div>
 						<span id="toolbar" class="ui-widget-header ui-corner-all">
-							<button id="lista-asistencia">I</button>
+							<button type="button" id="lista-asistencia">Imprimir Lista de Asistencia</button>
 						</span>
 						</div>
 					</th>
@@ -82,7 +82,7 @@
 					{% endif %}
 				</tbody>
 			</table>
-			<input type='hidden' id='campus_id' {% if campusalumno %} value='{{ campusalumno.campus.id }}' {% endif %}/>
+			<input type='hidden' id='campus_id' {% if campusalumno %} value='{{ campusalumno.0.campus.id }}' {% endif %}/>
 		</fieldset>
 	</form>
 {% endblock %}

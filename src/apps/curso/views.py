@@ -15,7 +15,7 @@ def curso(request):
         curso.save()
         return redirect('/curso/listar/')
     carrera = Carrera.objects.get(pk=1)
-    ciclos = carrera.ciclo_set.all().order_by('-pk')
+    ciclos = carrera.ciclo_set.all().order_by('pk')
     cursos = ciclos[0].curso_set.all().order_by('-pk')
     return render(request, 'curso/curso.html', { 'ciclo_form':ciclo_form, "carrera":carrera, 'ciclos':ciclos, 'cursos':cursos},)
 

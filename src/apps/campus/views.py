@@ -10,6 +10,7 @@ from docente.models import Docente
 from curso.models import Curso, CursoDocente
 from alumno.models import Alumno
 from models import Campus, AlumnoCampus
+from boleta.forms import ConceptoForm
 from forms import CampusForm, CampusSearchForm
 from datetime import timedelta, date, datetime
 
@@ -25,10 +26,12 @@ code = "000000"
 @login_required(login_url='/wvb/')
 def campus(request):
     if request.method == 'POST':
-        fecha_inicio = datetime.datetime.strptime(str(request.POST["fecha_inicio"]),'%d/%m/%Y'),
-        fecha_fin = datetime.datetime.strptime(str(request.POST["fecha_fin"]),'%d/%m/%Y'),
+        fecha_inicio = datetime.strptime(str(request.POST["fecha_inicio"]),'%d/%m/%Y'),
+        fecha_fin = datetime.strptime(str(request.POST["fecha_fin"]),'%d/%m/%Y'),
         ciclo = Ciclo.objects.get(pk = request.POST["ciclo"])
-        concepto = Concepto.objects.get( pk = 1)
+        concepto = ConceptoForm(request.POST)
+        if concepto.is_valid():
+            concepto.save()
         campus = Campus.objects.create(
                      ciclo = ciclo,
                      seccion = request.POST["seccion"],
@@ -36,7 +39,7 @@ def campus(request):
                      fecha_inicio = fecha_inicio[0],
                      fecha_fin = fecha_fin[0],
                      turno = request.POST["turno"],
-                     precio = concepto)
+                     precio = concepto.instance)
         campus.save()
         cursos = request.POST.getlist("cursos")
         matriculas = request.POST.getlist("matricular")
@@ -54,18 +57,19 @@ def campus(request):
                 total_alumnos = (Alumno.objects.exclude(codigo="").count()+1)
                 alumno.codigo = code[0:(len(code)-len(str(total_alumnos)))]+str(total_alumnos)
                 alumno.save()
-            AlumnosCampus(alumno = alumno,campus = campus,total = 0, deuda = campus.precio.precio*ciclo.carrera.duracion).save()
+            AlumnoCampus(alumno = alumno,campus = campus,total = 0, deuda = campus.precio.precio*ciclo.carrera.duracion).save()
         return redirect('/campus/nuevo/listar/'+str(campus.pk)+'/')
     campus_form = CampusForm()
     campus_search_form = CampusSearchForm()
     ciclo_form = CicloForm()
     carrera = Carrera.objects.get(pk=1)
-    ciclos = carrera.ciclo_set.all().order_by('-pk')
+    ciclos = carrera.ciclo_set.all().order_by('pk')
+    conceptoform = ConceptoForm()
     docentes = Docente.objects.filter(activo=True)
     alumnos_no_matriculados = Alumno.objects.filter(matriculado=False)
     return render(request,
                     'campus/campus.html',
-                    { 'campus_form': campus_form, "campus_search_form" : campus_search_form, "ciclo_form":ciclo_form,"carrera":carrera,"docentes":docentes,"alumnos_no_matriculados":alumnos_no_matriculados,'ciclos':ciclos })
+                    { 'campus_form': campus_form, "campus_search_form" : campus_search_form, "ciclo_form":ciclo_form,"carrera":carrera,"docentes":docentes,"alumnos_no_matriculados":alumnos_no_matriculados,'ciclos':ciclos, 'conceptoform' : conceptoform})
 
 @login_required(login_url='/wvb/')
 def campus_listar(request):
@@ -80,7 +84,7 @@ def campus_listar(request):
 def campus_new_listar(request, campus_id):
     campus_search_form = CampusSearchForm()
     campus = Campus.objects.get(pk = campus_id)
-    campusalumno = AlumnosCampus.objects.filter(campus = campus)
+    campusalumno = AlumnoCampus.objects.filter(campus = campus)
     carrera = Carrera.objects.get(pk=1)
     ciclos = carrera.ciclo_set.all().order_by('-pk')
     return render(request,
@@ -89,24 +93,23 @@ def campus_new_listar(request, campus_id):
 
 @login_required(login_url='/wvb/')
 def campus_lista_asistencia(request, campus_id):
+    nombre_dia = ['Lun','Mar','Mie','Jue','Vie']
     campus = Campus.objects.get(pk = campus_id)
-    alumnos = AlumnosCampus.objects.filter(campus = campus)
+    alumnos = AlumnoCampus.objects.filter(campus = campus)
     fecha_inicio = campus.fecha_inicio
     fecha_fin = campus.fecha_fin
-    if campus.fecha_inicio__weekday > 0:
-        fecha_inicio = campus.fecha_inicio - timedelta(days = fecha_inicio__weekday)
-    if campus.fecha_fin__weekday < 4:
-        fecha_fin = campus.fecha_fin + timedelta(days = fecha_fin__weekday)
-    semanas = fecha_fin - fecha_inicio
+    semanas = fecha_fin - fecha_inicio 
     dias = []
     asistencia = []
-    for d in range(1,semanas.days):
-        fecha = fecha_inicio + timedelta(days = 1)
-        if not fecha.day==5 and fecha.day==6:
-            dias.append(fecha.day)
+    for d in range(0,(semanas.days+1)):
+        fecha = fecha_inicio + timedelta(days = d)
+        if not (fecha.weekday()==5 or  fecha.weekday()==6):
+            dias.append((nombre_dia[fecha.weekday()],fecha.day))
         if len(dias) == 10:
             asistencia.append(dias)
             dias = []
+    if len(dias) > 0:
+        asistencia.append(dias)
     pdf_html_lista = render_to_string('campus/campus-lista-asistencia.html',
                          { 'campus' : campus, "alumnos" : alumnos, 'asistencia' : asistencia,},
                          context_instance=RequestContext(request))

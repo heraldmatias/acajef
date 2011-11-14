@@ -12,7 +12,7 @@
 					<table id="tcarrera">
 						<thead>
 							<tr>
-								<th>Carrera</th><th>Duracion</th><th>Precio</th><th>Valido</th>
+								<th>Carrera</th><th>Duracion</th><th>Valido</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -29,7 +29,6 @@
 									{% endif %}{% endif %}
 									{% endif %}
 								</td>
-								<td>S/. {{ carrera.precio }}</td>
 								<td>
 									<input type="checkbox" {% if carrera.valido %} checked="checked" {% endif %}/>
 								</td>
@@ -61,11 +60,6 @@
 										{{ carrera_form.carrera.errors }}
 										<label for="id_carrera">Carrera:</label>
 										{{ carrera_form.carrera }}
-									</div>
-									<div class="subcl type-text">
-										{{ carrera_form.precio.errors }}
-										<label for="id_precio">Precio</label>
-										{{ carrera_form.precio }}
 									</div>
 									<div class="subcr type-check">
 										<div>

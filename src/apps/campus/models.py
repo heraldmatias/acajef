@@ -51,11 +51,12 @@ class Campus(models.Model):
         verbose_name = "Campus"
         verbose_name_plural = "Campus"
 
-    def __unicode__(self):
-        return u'%s - %s' % (self.turno,self.seccion)
+    #def __unicode__(self):
+    #    return u'%s - %s' % (self.get_turno(),self.get_seccion())
 
     def get_turno(self):
-        return u'%s' % TURNO[self.turno][1]
+        t = ['Mañana','Tarde','Noche']
+        return u'%s' % t[self.turno]
 
     def get_seccion(self):
         t = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'LAB. 1', 'LAB. 2', 'LAB. 3',]

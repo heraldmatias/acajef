@@ -66,31 +66,54 @@
 								<legend>Asignaturas</legend>
 								<div id="asignaturas" class="subcolumns">
 									<div class="c50l">
-										<label for="id_ciclo">Curso:</label>
-										{% for curso in ciclos.0.curso_set.all %}
+										<label>Curso:</label>
+									</div>
+									<div class="c50r">
+										<label>Docente:</label>
+									</div>
+									{% for curso in ciclos.0.curso_set.all %}
+										<div class="c50l">
 											<div class="subcl type-text">
 												{{ campus_form.fecha_fin.errors }}
 												<input type="hidden" name="cursos" value="{{ curso.id }}">
 												<input type="text" value="{{ curso.curso }}" readonly="readonly">
-											</div>           		        
-										{% endfor %}
+											</div>
+										</div>
+										<div class="c50r">
+											<div class="subcl type-select">
+												<select id="id_docente_{{ docente.id }}" name="docente">
+													{% for docente in docentes %}
+													<option value="{{ docente.id }}">{{ docente }}</option>
+													{% endfor %}
+												</select>
+											</div>
+										</div>
+									{% endfor %}
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend>Precio</legend>
+								<div id="precio" class="subcolumns">
+									<div class="c50l">
+										<div class="subcl type-text">
+											{{ conceptoform.concepto.errors }}
+											<label>Concepto:</label>
+											{{ conceptoform.concepto }}
+										</div>
 									</div>
 									<div class="c50r">
-										<label for="id_ciclo">Docente:</label>
-										<div class="subcl type-select">
-											<select id="id_docente_{{ docente.id }}" name="docente">
-												{% for docente in docentes %}
-												<option value="{{ docente.id }}">{{ docente }}</option>
-												{% endfor %}
-											</select>
+										<div class="subcl type-text">
+											{{ conceptoform.precio.errors }}
+											<label>Precio:</label>
+											{{ conceptoform.precio }}
 										</div>
 									</div>
 								</div>
 							</fieldset>
 						{% endif %}
 						<div class="type-button">
-							<input type="reset" value="Nuevo" class="reset" id="reset2" name="reset2" />
-							<input type="submit" value="Matricular" class="submit" id="submit2" name="submit2" />
+							<input type="reset" value="Nuevo" class="reset" id="reset" name="reset" />
+							<input type="submit" value="Matricular" class="submit" id="submit" name="submit" />
 						</div>
 					</div>
 				</div>
