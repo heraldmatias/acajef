@@ -1,11 +1,11 @@
 from django.db import models
 from curso.models import CursoDocente
 from boleta.models import Boleta
-from campus.models import AlumnosCampus
+from campus.models import AlumnoCampus
 
 class Nota(models.Model):
     curso_docente  = models.ForeignKey(CursoDocente)
-    alumno_campus  = models.ForeignKey(AlumnosCampus)
+    alumno_campus  = models.ForeignKey(AlumnoCampus)
     nota           = models.IntegerField('Nota')
 
     def __unicode__(self):

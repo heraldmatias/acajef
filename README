@@ -9,5 +9,16 @@ Instalación
 ------------------------
 Tareas
 ------------------------
-Herald
-	Implementar un trigger que cuando anulen una boleta 
+Implementar un trigger que cuando anulen una boleta si por curso o pension estas vuelvan a cero
+El sistema debe emitir si el pago de pension procede o no, no procede cuando el alumno ya pago sus cinco pensiones de ciclo
+validar campus si el alumno es seleccionado de un aula se debe matricular en un ciclo mayor a su actual
+cuando se ingresen todas las notas del ciclo el alumno cambia de estatus confirmado =  true en alumnocampus model
+crear un ciclo q diga egresado?
+historial de pago
+historial de notas
+crear una tabla concepto y amarrarla a boletas
+
+------------------------
+Lunes
+------------------------
+Un servidor

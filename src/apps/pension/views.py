@@ -6,7 +6,6 @@ from boleta.models import Boleta
 from boleta.views import get_serie_numero
 from alumno.models import Alumno
 from docente.models import Docente
-from models import Pension
 from boleta.forms import BoletaForm
 import datetime
 
@@ -19,17 +18,14 @@ def pago_pension(request):
         boleta = Boleta.objects.create(
                         alumno = alumno,
                         serie = numero_serie["serie"],
-                        numero = numero_serie["numero"],
-                        concepto = campus.campus.precio,
+                        numero =numero_serie["numero"],
+                        concepto = request.POST["concepto"],
                         fecha_emision = datetime.datetime.strptime(request.POST["fecha_emision"],'%d/%m/%Y %H:%M:%S'),
                         valido = True,
                         importe = importe,
                         saldo = Decimal(request.POST["saldo"])
 					)
         boleta.save()
-        campus.deuda = campus.deuda - importe
-        campus.total = campus.total + importe
-        campus.save()
         Pension.objects.create(alumno_campus = campus, boleta = boleta).save()
         return redirect(u'%s/%s' % (boleta.get_url_imprimir(),str(campus[0].campus.id)))
     numero_serie = get_serie_numero()

@@ -23,12 +23,14 @@
 				</div>
 				<div class="c50r">
 					<div class="subcl type-text">
+						{{ serie.errors }}
 						<label for="id_boleta">Boleta:</label>
 						<input type="text" id="id_boleta" name="codigo_boleta" value="{{ numero_serie.serie }}-{{ numero_serie.numero }}"readonly="readonly"/>
 					</div>
 				</div>
 				<div class="subcolumns">
 					<div class="subcl type-text">
+						{{ alumno.errors }}
 						<label for="id_alumno">Alumno:</label>
 						<input type="text" id="id_alumno" name="alumno"/>
 					</div>
@@ -49,24 +51,29 @@
 							<input type="text" name="importe" id="id_importe" onkeyup="setSaldo(this.value);"/>
 						</div>
 						<div class="subcl type-text">
+							{{ boleta_form.saldo.errors }}
 							<label for="id_saldo">Saldo:</label>
 							<input type="text" name="saldo" id="id_saldo" readonly="readonly" value="0"/>
 						</div>
 					</div>
 					<div class="c50r">
 						<div class="subcl type-text">
+							{{ boleta_form.fecha_emision.errors }}
 							<label for="id_carrera">Carrera:</label>
 							<input type="text" name="carrera" id="id_carrera" readonly="readonly"/>
 						</div>
 						<div class="subcl type-text">
+							{{ ciclo_seccion.errors }}
 							<label for="id_saldo">Ciclo - Seccion:</label>
 							<input type="text" name="ciclo_seccion" id="id_ciclo_seccion" readonly="readonly"/>
 						</div>
 						<div class="subcl type-text">
+							{{ turno.errors }}
 							<label for="id_saldo">Turno:</label>
 							<input type="text" name="turno" id="id_turno" readonly="readonly"/>
 						</div>
 						<div class="subcl type-text">
+							{{ boleta_form.fecha_emision.errors }}
 							<label for="id_contro_pago">Control Pago:</label>
 							<input type="text" name="contro_pago" id="id_contro_pago" readonly="readonly"/>
 						</div>

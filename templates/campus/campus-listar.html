@@ -56,9 +56,13 @@
 		<fieldset>
 			<table id="talumnos">
 				<thead>
-					<th>&nbsp;</th>
-					<th>&nbsp;</th>
-					<th>&nbsp;</th>
+					<th colspan="3">
+						<div>
+						<span id="toolbar" class="ui-widget-header ui-corner-all">
+							<button id="lista-asistencia">I</button>
+						</span>
+						</div>
+					</th>
 				</thead>
 				<tbody>
 					{% if campusalumno %}
@@ -78,6 +82,7 @@
 					{% endif %}
 				</tbody>
 			</table>
+			<input type='hidden' id='campus_id' {% if campusalumno %} value='{{ campusalumno.campus.id }}' {% endif %}/>
 		</fieldset>
 	</form>
 {% endblock %}
@@ -117,6 +122,14 @@
 					});
 					ciclos.find('option').first().attr('selected',true);
 				});
+			});
+			$( "#lista-asistencia" ).button({
+				text: false,
+				icons: {
+					primary: "ui-icon-note"
+				}
+				}).click(function(){
+					window.location.href='/campus/lista/asistencia/'+$("#campus_id").val()+'/';
 			});
 		});
 		function sortoptions(sort){

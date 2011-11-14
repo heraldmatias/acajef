@@ -1,5 +1,4 @@
-from models import Boleta, Concepto
 from django.contrib import admin
+from models import Concepto
 
-admin.site.register(Boleta)
 admin.site.register(Concepto)

@@ -10,4 +10,3 @@ App for Pago
 class Pension(models.Model):
     alumno_campus = models.ForeignKey(AlumnoCampus)
     boleta        = models.ForeignKey(Boleta)
-

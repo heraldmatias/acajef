@@ -25,4 +25,7 @@ class Alumno(models.Model):
         unique_together = (('apellido', 'nombre','codigo','dni'),)
 
     def __unicode__(self):
-        return u'%s,  %s' % (self.apellido, self.nombre)
+        return self.get_full_name()
+
+    def get_full_name(self):
+		return u'%s,  %s' % (self.apellido, self.nombre)

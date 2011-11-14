@@ -5,6 +5,7 @@ from django.utils import simplejson
 from django.db.models import Q
 from models import Boleta
 from alumno.models import Alumno
+from campus.models import Campus
 import datetime
 
 numero_boleta = "0000000"
@@ -46,5 +47,10 @@ def alumno_boleta_json(request,codigo_alumno):
 def alumno_boleta_nombre_json(request):
     alumno = request.GET.get('term')
     alumnos = Alumno.objects.values('codigo', 'nombre', 'apellido').filter(Q(nombre__icontains = alumno) | Q(apellido__icontains = alumno), Q(matriculado = True))
-    resultado = [{'id' : alumnoselect['codigo'], 'value' : u'%s %s' % (alumnoselect['nombre'], alumnoselect['apellido'])} for alumnoselect in alumnos]
+    resultado = [{'id' : alumnoselect['codigo'], 'value' : u'%s, %s' % (alumnoselect['apellido'], alumnoselect['nombre'])} for alumnoselect in alumnos]
     return HttpResponse(simplejson.dumps(resultado),mimetype='application/json')
+
+def boleta_imprimir(request, boleta_id, campus_id):
+    boleta = Boleta.objects.get(pk = boleta_id)
+    campus = Campus.objects.get(pk = campus_id)
+    return render(request, 'boleta/boleta_imprimir.html', {'boleta' : boleta, 'campus' : campus})

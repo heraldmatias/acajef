@@ -15,12 +15,10 @@ def carrera(request):
         carrera_form = CarreraForm(request.POST)
         if carrera_form.is_valid():
             carrera_form.save()
-            ciclos = int(request.POST["N"])-1
-            while(ciclos>=0):
-                Ciclo.objects.create(
-                    carrera = carrera_form.instance,
-                    ciclo = CICLOS[ciclos]).save()
-                ciclos-=1
+            ciclos = int(request.POST["N"])
+            for i in range(0,ciclos):
+                Ciclo.objects.create(carrera = carrera_form.instance, ciclo = CICLOS[ciclos]).save()
+            Ciclo.objects.create(carrera = carrera_form.instance,ciclo = 'Egresado').save()
             return redirect('/institucion/carrera')
     carreras = Carrera.objects.all().order_by('carrera')
     return render(request,

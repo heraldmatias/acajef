@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from institucion.models import Ciclo
+from boleta.models import Concepto
 from alumno.models import Alumno
-from pago.models import Monto
 
 """
 App for Campus
@@ -45,6 +45,7 @@ class Campus(models.Model):
     fecha_inicio = models.DateField('Fecha de Inicio')
     fecha_fin    = models.DateField('Fecha de Fin')
     turno        = models.IntegerField('Turno', choices=TURNO)
+    precio       = models.ForeignKey(Concepto)
 
     class Meta:
         verbose_name = "Campus"
@@ -60,8 +61,9 @@ class Campus(models.Model):
         t = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'LAB. 1', 'LAB. 2', 'LAB. 3',]
         return u'%s' % t[self.seccion]
 
-class AlumnosCampus(models.Model):
+class AlumnoCampus(models.Model):
     alumno     = models.ForeignKey(Alumno)
     campus     = models.ForeignKey(Campus)
-    monto      = models.ForeignKey(Monto)
+    total      = models.DecimalField('Total', max_digits=8, decimal_places=1)
+    deuda      = models.DecimalField('Deuda', max_digits=8, decimal_places=1)
     confirmado = models.BooleanField('¿Confirmado?', default = False)
