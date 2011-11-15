@@ -10,9 +10,11 @@ from docente.models import Docente
 from curso.models import Curso, CursoDocente
 from alumno.models import Alumno
 from models import Campus, AlumnoCampus
+from calificacion.models import Nota
 from boleta.forms import ConceptoForm
 from forms import CampusForm, CampusSearchForm
 from datetime import timedelta, date, datetime
+from django.db.models import Q
 
 from xhtml2pdf import pisa
 import cStringIO as StringIO
@@ -35,7 +37,7 @@ def campus(request):
         campus = Campus.objects.create(
                      ciclo = ciclo,
                      seccion = request.POST["seccion"],
-                     semestre = 1 if (fecha_inicio[0].month <=6) else 2,
+                     semestre = 0 if (fecha_inicio[0].month <=6) else 1,
                      fecha_inicio = fecha_inicio[0],
                      fecha_fin = fecha_fin[0],
                      turno = request.POST["turno"],
@@ -132,3 +134,37 @@ def campus_matriculado_alumno(request, campus_id):
     campus_alumno_get = AlumnosCampus.objects.filter(campus = campus)
     json_array = [{ "id" : campus.alumno.pk , "dni" : campus.alumno.dni, "nombre" : campus.alumno.nombre, "apellido" : campus.alumno.apellido } for campus in campus_alumno_get]
     return HttpResponse(simplejson.dumps(json_array),mimetype='application/json')
+
+@login_required(login_url='/wvb/')
+def registro_academico(request):
+    if request.method == 'POST':
+        alumnos = request.POST.getlist("alumnos")
+        notas = request.POST.getlist("notas")
+        campus = Campus.objects.get(pk = request.POST["campus"])
+        cursodocente = CursoDocente.objects.get(pk = request.POST["cursos_docente"])
+        for index,alumno in enumerate(alumnos):
+            Nota.objects.create(
+                alumno_campus = AlumnoCampus.objects.get(Q(alumno = Alumno.objects.get(pk = alumno)) , Q(campus = campus)),
+                curso_docente = cursodocente,
+                nota = notas[index]).save()
+        return redirect('/campus/registro-academico/')
+    carrera = Carrera.objects.get(pk=1)
+    campus_search_form = CampusSearchForm()
+    carrera = Carrera.objects.get(pk=1)
+    ciclos = carrera.ciclo_set.all().order_by('pk')
+    return render(request, 'campus/registro_academico.html', { 'campus_search_form': campus_search_form,'ciclos':ciclos },)
+
+@login_required(login_url='/wvb/')
+def registro_academico_ajax(request,ciclo_id,ano,seccion,turno,semestre):
+    try:
+        campus = Campus.objects.get(
+                    fecha_inicio__year = ano,
+                    seccion = seccion,
+                    semestre = semestre,
+                    turno = turno,
+                    ciclo = Ciclo.objects.get(pk=ciclo_id))
+        alumnos = campus.alumnocampus_set.all()
+        docentes = CursoDocente.objects.filter(~Q(pk__in = Nota.objects.values('curso_docente').filter(alumno_campus__in = alumnos).distinct()), Q(campus = campus))
+    except:
+        return render(request, 'campus/registro_academico_ajax.html')
+    return render(request, 'campus/registro_academico_ajax.html', { 'alumnos': alumnos,'docentes':docentes,"campus":campus,})

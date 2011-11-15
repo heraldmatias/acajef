@@ -38,7 +38,11 @@
 						<div class="subcl type-select">
 							{{ boleta_form.concepto.errors }}
 							<label for="id_concepto">Concepto:</label>
-							{{ boleta_form.concepto }}
+							<select id='concepto' name='concepto'>
+								{% for concepto in conceptos  %}
+									<option value='{{ concepto.id }}'>{{ concepto.concepto }}</option>
+								{% endfor %}
+							</select>
 						</div>
 						<div class="subcl type-text">
 							{{ boleta_form.fecha_emision.errors }}
@@ -128,11 +132,6 @@
 				$("#id_carrera").val(data.carrera);
 				$("#id_concepto").focus();
 			});
-		}
-		function setSaldo(importe){
-			if(importe=="")
-				importe=0
-			saldo.val(Number(precio_pension.val())-Number(importe));
 		}
 	</script>
 {% endblock %}

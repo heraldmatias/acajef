@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}W.V.B. - Registro Académico{% endblock %}
+{% block csspage %}
+	<style>
+		#id_alumno{
+			width: 97.8%;
+		}
+		#toolbar {
+			padding: 10px 4px;
+		}
+	</style>
+{% endblock %}
+{% block content %}
+	<form method="post" action="/campus/registrar/registro-academico/" class="yform full" role="application" onSubmit="return confirmar('¿Esta segur@ que desea registrar?');">
+		{% csrf_token %}
+		<div class="subcolumns">
+			<fieldset>
+				<legend>Campus</legend>
+				<div class="c50l">
+					<div class="subcl">
+						<div class="subcl type-select">
+							{{ campus_search_form.search_carrera.errors }}
+							<label for="id_carrera">Carrera:</label>
+							{{ campus_search_form.search_carrera }}
+						</div>
+						<div class="subcl type-select">
+							{% if ciclos|length > 0 %}
+								<label for="id_ciclo">Ciclo:</label>
+								<select id="id_ciclo" name="ciclo">
+								{% for ciclo in ciclos %}
+									<option value="{{ ciclo.id }}">{{ ciclo.ciclo }}</option>
+								{% endfor %}
+								</select>
+							{% else %}
+								<p>No hay ciclos disponibles.</p>
+							{% endif %}
+						</div>
+						<div class="subcl type-select">
+							{{ campus_search_form.search_years.errors }}
+							<label for="id_search_years">Año:</label>
+							{{ campus_search_form.search_years }}
+						</div>
+					</div>
+				</div>
+				<div class="c50r">
+					<div class="subcr">
+						<div class="subcl type-select">
+							{{ campus_search_form.search_seccion.errors }}
+							<label for="id_seccion">Sección:</label>
+							{{ campus_search_form.search_seccion }}
+						</div>
+						<div class="subcl type-select">
+							{{ campus_search_form.search_turno.errors }}
+							<label for="id_turno">Turno:</label>
+							{{ campus_search_form.search_turno }}
+						</div>
+						<div class="subcl type-select">
+							{{ campus_search_form.search_semestre.errors }}
+							<label for="id_semestre">Semestre:</label>
+							{{ campus_search_form.search_semestre }}
+						</div>
+						<div class="type-button">
+							<input type="button" value="Buscar" class="button" id="buscar" name="buscar" onclick='getAlumnosMatriculados();'/>
+							<input type="submit" value="Registrar" class="submit" id="submit" name="submit" />
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+		<fieldset>
+			<legend>Alumnos</legend>
+			<table id="talumnos"></table>
+		</fieldset>
+	</form>
+{% endblock %}
+{% block left-bar %}
+    {% include "home/academico.html" %}
+{% endblock %}
+{% block scriptjs %}
+	<script src="{{ STATIC_URL  }}js/base.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL  }}js/jquery.selectboxes.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL  }}js/jquery.tablesorter.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL  }}js/jquery.uitablefilter.js" type="text/javascript"></script>
+	<script>
+		var ciclos = null;
+		var talumnos = null;
+		$(document).ready(function() {
+			run();
+			ciclos = $("#id_ciclo");
+			$("#id_turno option[value=1]").attr("selected",true);
+			$("#id_search_carrera option[value=1]").attr("selected",true);
+			$("#id_search_carrera").change(function() {
+				ciclos.removeOption(/./);
+				$.getJSON("/institucion/ciclos/"+this.value+"/json/", function(data){
+					var val = null;
+					$.each(data, function(key, value){
+						if(key==0){
+							val = value.pk;
+						}
+						ciclos.addOption(value.pk, value.fields.ciclo);
+					});
+					ciclos.find('option').first().attr('selected',true);
+				});
+			});
+			talumnos = $("#talumnos").tablesorter();
+			tbalumnos = $("#talumnos");
+			$("#filtra_alumno").keyup(function() {
+				$.uiTableFilter( tbalumnos, this.value );
+			});
+		});
+		function getAlumnosMatriculados(){
+			var seccion = $("#id_search_seccion").val();
+			var ano = $("#id_search_years").val();
+			var semestre = $("#id_search_semestre").val();
+			var turno = $("#id_search_turno").val();
+			tbalumnos.html($.ajax({
+					url: "/campus/registro-academico/"+ciclos.val()+"-"+ano+"-"+seccion+"-"+turno+"-"+semestre+"/ajax/",
+					dataType: "html",
+					async: false
+				}).responseText);
+		}
+	</script>
+{% endblock %}

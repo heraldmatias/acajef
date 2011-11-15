@@ -1,0 +1,46 @@
+{% if campus %}
+	<thead>
+	<tr>
+		<th>
+			Alumno | Curso
+			<input type="hidden" name="campus" id="campus" value="{{ campus.id }}"/>
+		</th>
+		<th>
+			<div class="subcl type-select">
+				<select id="cursos_docente" name="cursos_docente">
+					{% for docente in docentes %}
+						<option value="{{ docente.id }}">{{ docente.curso.curso }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for alumno in alumnos %}
+	<tr>
+		<th>
+			<input type="hidden" name="alumnos" id="{{ alumno.alumno.id }}" value="{{ alumno.alumno.id }}"/>
+			{{ alumno.alumno.nombre }} {{ alumno.alumno.apellido }}
+		</th>
+		<td><input type="text" name="notas" id="{{ docente.id }}" value="0" maxlength=2 /></td>
+	</tr>
+	{% endfor %}}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td>Total de Alumnos</td><td>{{ alumnos|length }}</td>
+		</tr>
+	</tfoot>
+{% else %}
+	<thead>
+		<tr>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>No hay un Campus</td>
+		</tr>
+	</tbody>
+{% endif %}

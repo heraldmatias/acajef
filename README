@@ -16,7 +16,8 @@ cuando se ingresen todas las notas del ciclo el alumno cambia de estatus confirm
 crear un ciclo q diga egresado?
 historial de pago
 historial de notas
-crear una tabla concepto y amarrarla a boletas
+crear una rutina q verifique si un alumno tiene todas las notas del ciclo agregadas y cambiar su confirmado a true
+
 
 ------------------------
 Lunes

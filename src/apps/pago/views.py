@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from decimal import Decimal
 from models import Pension
 from django.contrib.auth.decorators import login_required
-from boleta.models import Boleta
+from boleta.models import Boleta, Concepto
 from boleta.views import get_serie_numero
 from alumno.models import Alumno
 from docente.models import Docente
@@ -17,23 +17,24 @@ def pago_pension(request):
         numero_serie = get_serie_numero()
         importe = Decimal(request.POST["importe"])
         alumno = Alumno.objects.get(codigo=request.POST["codigo_alumno"])
-        campus = alumno.alumnoscampus_set.all().order_by("-id")[:1]
+        campus = alumno.alumnocampus_set.all().order_by("-id")[:1]
+        alumnocampus = campus[0]
         boleta = Boleta.objects.create(
                         alumno = alumno,
                         serie = numero_serie["serie"],
                         numero = numero_serie["numero"],
-                        concepto = campus.campus.precio,
+                        concepto = alumnocampus.campus.precio,
                         fecha_emision = datetime.datetime.strptime(request.POST["fecha_emision"],'%d/%m/%Y %H:%M:%S'),
                         valido = True,
                         importe = importe,
                         saldo = Decimal(request.POST["saldo"])
 					)
         boleta.save()
-        campus.deuda = campus.deuda - importe
-        campus.total = campus.total + importe
-        campus.save()
-        Pension.objects.create(alumno_campus = campus, boleta = boleta).save()
-        return redirect(u'%s/%s' % (boleta.get_url_imprimir(),str(campus[0].campus.id)))
+        alumnocampus.deuda = alumnocampus.deuda - importe
+        alumnocampus.total = alumnocampus.total + importe
+        alumnocampus.save()
+        Pension.objects.create(alumno_campus = alumnocampus, boleta = boleta).save()
+        return redirect(u'%s/%s' % (boleta.get_url_imprimir(),str(alumnocampus.campus.id)))
     numero_serie = get_serie_numero()
     return render(request, 'pago/pago_pension.html', { 'numero_serie': numero_serie, },)
 
@@ -43,7 +44,7 @@ def pago_subsanacion(request):
         numero_serie = get_serie_numero()
         importe = Decimal(request.POST["importe"])
         alumno = Alumno.objects.get(codigo=request.POST["codigo_alumno"])
-        campus = alumno.alumnoscampus_set.all().order_by("-id")[:1]
+        campus = alumno.alumnocampus_set.all().order_by("-id")[:1]
         boleta = Boleta.objects.create(
                         alumno = alumno,
                         serie = numero_serie["serie"],
@@ -66,12 +67,12 @@ def pago_general(request):
     if request.method == 'POST':
         numero_serie = get_serie_numero()
         alumno = Alumno.objects.get(codigo = request.POST["codigo_alumno"])
-        campus = alumno.alumnoscampus_set.all().order_by("-id")[:1]
+        campus = alumno.alumnocampus_set.all().order_by("-id")[:1]
         boleta = Boleta.objects.create(
                 alumno = alumno,
                 serie = numero_serie["serie"],
                 numero = numero_serie["numero"],
-                concepto = request.POST["concepto"],
+                concepto = Concepto.objects.get(pk = request.POST["concepto"]),
                 fecha_emision = datetime.datetime.strptime(request.POST["fecha_emision"],'%d/%m/%Y %H:%M:%S'),
                 valido = True,
                 importe = Decimal(request.POST["importe"]),
@@ -80,8 +81,9 @@ def pago_general(request):
         boleta.save()
         return redirect(u'%s/%s' % (boleta.get_url_imprimir(),str(campus[0].campus.id)))
     numero_serie = get_serie_numero()
+    conceptos = Concepto.objects.exclude(concepto__icontains='Pensi')
     boleta_form = BoletaForm()
-    return render(request, 'pago/pago_general.html', { 'numero_serie': numero_serie, 'boleta_form' : boleta_form},)
+    return render(request, 'pago/pago_general.html', { 'numero_serie': numero_serie, 'boleta_form' : boleta_form, "conceptos" : conceptos},)
 
 @login_required(login_url='/wvb/')
 def anular(request):

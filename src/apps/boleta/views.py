@@ -12,7 +12,6 @@ import datetime
 numero_boleta = "0000000"
 serie_boleta = "000"
 
-@login_required(login_url='/wvb/')
 def get_serie_numero():
     numero_serie = Boleta.objects.values("serie","numero").order_by("-serie","-numero")
     if len(numero_serie)==0:
@@ -37,14 +36,14 @@ def boletas(request):
 @login_required(login_url='/wvb/')
 def alumno_boleta_json(request,codigo_alumno):
     alumno = Alumno.objects.get(codigo = codigo_alumno)
-    campus = alumno.alumnoscampus_set.all().order_by("-id")[:1]
+    campus = alumno.alumnocampus_set.all().order_by("-id")[:1]
     boleta_json = {
                       "codigo" : alumno.codigo,
                       "alumno" : u'%s %s' % (alumno.apellido, alumno.nombre),
-                      "turno" : campus[0].campus.turno,
+                      "turno" : campus[0].campus.get_turno().encode("ascii","ignore"),
                       "ciclo_seccion" : u'%s - %s' % (campus[0].campus.ciclo.ciclo, campus[0].campus.get_seccion()),
                       "carrera" : campus[0].campus.ciclo.carrera.carrera,
-                      "precio_pension" : str(campus[0].campus.ciclo.carrera.precio),
+                      "precio_pension" : str(campus[0].campus.precio.precio),
                       }
     return HttpResponse(simplejson.dumps(boleta_json),mimetype='application/json')
 

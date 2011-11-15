@@ -93,6 +93,7 @@
 		var fecha_emision = new Date();
 		var meses = new Array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
 		var codigo = null;
+		var precio_pension = null;
 		$(document).ready(function() {
 			run();
 			txtfecha = $("#id_fecha_emision");
@@ -118,16 +119,17 @@
 				codigo.val(data.codigo)
 				$("#id_alumno").val(data.alumno);
 				$("#id_ciclo_seccion").val(data.ciclo_seccion);
-				$("#id_turno").val(data.turno==="1" ? "Mañana":data.turno==="2" ? "Tarde":"Noche");
+				$("#id_turno").val(data.turno);
 				$("#id_carrera").val(data.carrera);
 				saldo.val(data.precio_pension);
 				$("#id_importe").focus();
+				precio_pension = data.precio_pension
 			});
 		}
 		function setSaldo(importe){
 			if(importe=="")
 				importe=0
-			saldo.val(Number(precio_pension.val())-Number(importe));
+			saldo.val(Number(precio_pension)-Number(importe));
 		}
 	</script>
 {% endblock %}
