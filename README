@@ -1,8 +1,11 @@
 ------------------------
 Instalación
 ------------------------
+- sudo apt-get install python-dev
 - python bootstrap.py -d
 - bin/buildout -vvv
+- mkdir media/alumno
+- mkdir media/curriculum
 - Recuerda que usamos grappelli
 	http://readthedocs.org/docs/django-grappelli/en/latest/quickstart.html#installation
 
