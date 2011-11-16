@@ -9,7 +9,7 @@
 	</style>
 {% endblock %}
 {% block content %}
-	<form method="post" action="/wvb/form/pago-subsanar/" class="yform full" role="application" onSubmit="if(!confirmar()) return false;">
+	<form method="post" action="/pago/registrar/pago-subsanar/" class="yform full" role="application" onSubmit="return confirmar('¿Esta segur@ que desea registrar el pago?');">
 		{% csrf_token %}
 		<fieldset>
 		<legend>Pensión</legend>
@@ -34,7 +34,7 @@
 				<div class="subcl type-text">
 					{{ alumno.errors }}
 					<label for="id_alumno">Alumno:</label>
-					<input type="text" id="id_alumno" name="alumno" readonly="readonly"/>
+					<input type="text" id="id_alumno" name="alumno"/>
 				</div>
 			<div>
 			<div class="c50l">
@@ -130,10 +130,12 @@
 		var meses = new Array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
 		var codigo = null;
 		var precio_pension = null;
+		var cursos = null;
 		$(document).ready(function() {
 			run();
 			txtfecha = $("#id_fecha_emision");
 			saldo = $("#id_saldo");
+			cursos = $("#curso")
 			$("#id_contro_pago").val(meses[fecha_emision.getMonth()]+" "+fecha_emision.getYear().toString().substr(0,2))
 			codigo = $("#id_codigo_alumno").focus();
 			$( "#id_alumno" ).autocomplete({
@@ -164,10 +166,12 @@
 			});
 		}
 		function getCursos(codigo){
+			cursos.removeOption(/./);
 			$.getJSON("/calificacion/cursos-desaprobado/"+codigo+"/json/",function(data){
-				$("#curso").addOption(data, );
+				$.each(data,function(key, value){
+						cursos.addOption(value.id, value.curso);
+        	        });
 			});
-			
 		}
 		function setSaldo(importe){
 			if(importe=="")
@@ -176,133 +180,3 @@
 		}
 	</script>
 {% endblock %}
-
-
-<!--
-
-        <script type="text/javascript">
-        	var asignaturas=null;
-        	var academicomenu=null;
-        	var sciclo = null;
-        	var dluamnos = null;
-        	var talumnos = null;
-        	var dluamnosm = null;
-        	var tbalumnos_ma = null;
-        	var divcont=null;
-        	var pagomenu=null;
-        	var txtfecha=null;
-        	var monto_pension=null;
-        	var saldo=null;
-        	var fecha_emision=new Date();
-        	var meses=new Array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
-        	$(document).ready(function() {
-        	    asignaturas=$("#asignaturas");
-        	    divcont=$("#col3_content");
-        	    txtfecha=$("#id_fecha_emision");
-        		sciclo = $("#id_ciclo");
-        		monto_pension=$("#id_monto_pension");
-        		curso=$("#curso");
-        		saldo=$("#id_saldo");
-                $("#id_contro_pago").val(meses[fecha_emision.getMonth()]+" "+fecha_emision.getYear().toString().substr(0,2))
-        		$("#id_codigo_alumno").focus();
-        		$( "#anadir_aula" ).button({
-        			text: false,
-        			icons: {
-        				primary: "ui-icon-circle-plus"
-        			}
-        		}).click(function(){
-        		    getAlumnosMatriculados();
-        		});
-        		$("#anadir").button({
-        		    text:false,
-        		    icons:{
-        		        primary: "ui-icon-check"
-        		    }
-        		}).click(function(){
-        		    anadirAlumnos(tbalumnos_no);
-        		});
-				$('#hierarchybreadcrumb').menu({
-					content: $('#hierarchybreadcrumb').next().html(),
-					backLink: false
-				});
-				sciclo.change(function(){
-                    asignaturas.html($.ajax({
-                        url: "/wvb/ajax/asignaturas/"+this.value+"/",dataType: "html",async: false
-                    }).responseText);
-                });
-				$("#id_carrera option[value=1]").attr("selected",true);
-				$("#id_carrera").change(function() {
-				    sciclo.removeOption(/./);
-                    sciclo.ajaxAddOption("/wvb/json/ciclo/"+this.value ,{}, true, sortoptions, [{"dir":"asc"}]);
-                });
-                getFechaHora();
-                //imprimir();
-        	});
-        	function anadirAlumnos(tabla){
-        	    $.each(tabla.find("tbody tr"),function(){
-        	        if(this.cells[3].childNodes.item(0).checked){
-        	            talumnos.find("tbody").append(this);
-        	        }
-        	    });
-        	    dluamnos.dialog( "close" );
-        	}
-        	function confirmar(){
-                if (confirm("¿Esta seguro que desea imprimir la boleta?"))
-                    return true;
-                return false;
-        	}
-        	function sortoptions(sort){
-            	var $this = $(this);
-            	$this.sortOptions(sort.dir == "asc" ? true : false);
-            	sciclo.change();
-            }
-            function getAcademicoMenu(){
-        		if(academicomenu==null)
-        			academicomenu = $.ajax({
-        				url: "/wvb/include/menuacademico",dataType: "html",async: false
-        			}).responseText;
-        		divcont.html(academicomenu);
-    			menuacademico();
-        	}
-        	function menuacademico(){
-				$('#hierarchybreadcrumb').menu({
-					content: $('#hierarchybreadcrumb').next().html(),
-					backLink: false
-				});
-			}
-			function getFechaHora(){
-			    fecha_emision=new Date();
-			    txtfecha.val(fecha_emision.getDate()+"/"+(fecha_emision.getMonth()+1)+"/"+fecha_emision.getFullYear()+" "+fecha_emision.getHours()+":"+fecha_emision.getMinutes()+":"+fecha_emision.getUTCSeconds());
-			    setTimeout(getFechaHora,1000);
-			}
-			function getCampus(codigo_alumno){
-        	 $.getJSON("/wvb/json/nota_boleta_json/"+codigo_alumno+"/",function(data){
-	            $("#id_alumno").val(data.alumno);
-	            $("#id_ciclo_seccion").val(data.ciclo_seccion);
-	            $("#id_turno").val(data.turno==="1" ? "Mañana":data.turno==="2" ? "Tarde":"Noche");
-	            monto_pension.val(data.monto_pension);
-	            $("#id_carrera").val(data.carrera);
-	            $("#id_monto").focus();
-	            $.each(data.notas,function(key,value){
-					curso.append("<option value='"+key+"'>"+value+"</option>");
-				});
-			 });
-        	}
-			function getAcademicoMenu(){
-        		if(academicomenu==null)
-        			academicomenu = $.ajax({
-        				url: "/wvb/include/menuacademico",dataType: "html",async: false
-        			}).responseText;
-        		divcont.html(academicomenu);
-    			menuacademico();
-        	}
-        	function getPagoMenu(){
-        		if(pagomenu==null)
-        			pagomenu = $.ajax({
-        				url: "/wvb/include/menupago",dataType: "html",async: false
-        			}).responseText;
-        		divcont.html(pagomenu);
-    			menuacademico();
-        	}
-        </script>
--->
