@@ -7,6 +7,7 @@ from boleta.models import Boleta, Concepto
 from boleta.views import get_serie_numero
 from alumno.models import Alumno
 from docente.models import Docente
+from calificacion.models import Recuperacion, Nota
 from models import Pension
 from boleta.forms import BoletaForm
 import datetime
@@ -49,18 +50,19 @@ def pago_subsanacion(request):
                         alumno = alumno,
                         serie = numero_serie["serie"],
                         numero = numero_serie["numero"],
-                        concepto = request.POST["concepto"],
+                        concepto = Concepto.objects.get(pk = request.POST['concepto']),
                         fecha_emision = datetime.datetime.strptime(request.POST["fecha_emision"],'%d/%m/%Y %H:%M:%S'),
                         valido = True,
                         importe = importe,
                         saldo = Decimal(request.POST["saldo"])
                     )
         boleta.save()
-        Recuperacion.objects.create(nota = Nota.objects.get(pk=request.POST["curso"]), boleta = boleta).save()
-        return redirect('/pago/subsanacion')
+        Recuperacion.objects.create(nota = Nota.objects.get(pk = request.POST["curso"]), boleta = boleta).save()
+        return redirect(u'%s/%s' % (boleta.get_url_imprimir(),str(campus[0].campus.id)))
     numero_serie = get_serie_numero()
     docentes = Docente.objects.filter(activo=True)
-    return render(request, 'pago/pago_nota.html', { 'numero_serie': numero_serie, 'docentes':docentes,},)
+    conceptos = Concepto.objects.filter(concepto__icontains = 'Subsanar')
+    return render(request, 'pago/pago_nota.html', { 'numero_serie': numero_serie, 'docentes':docentes,'conceptos':conceptos},)
 
 @login_required(login_url='/wvb/')
 def pago_general(request):

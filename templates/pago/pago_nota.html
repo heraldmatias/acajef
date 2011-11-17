@@ -12,7 +12,7 @@
 	<form method="post" action="/pago/registrar/pago-subsanar/" class="yform full" role="application" onSubmit="return confirmar('¿Esta segur@ que desea registrar el pago?');">
 		{% csrf_token %}
 		<fieldset>
-		<legend>Pensión</legend>
+		<legend>Subsanar Nota</legend>
 		<div class="subcolumns">
 			<div class="c50l">
 				<div class="subcl">
@@ -38,10 +38,13 @@
 				</div>
 			<div>
 			<div class="c50l">
-				<div class="subcl type-text">
-					{{ boleta_form.concepto.errors }}
+				<div class="subcl type-select">
 					<label for="id_concepto">Concepto:</label>
-					<input type="text" name="concepto" id="id_concepto" readonly="readonly" value="Pensión"/>
+					<select name="concepto" id="id_concepto">
+						{% for concepto in conceptos %}
+						<option value='{{ concepto.id }}'>{{ concepto.concepto }}</option>
+						{% endfor %}
+					</select>
 				</div>
 				<div class="subcl type-text">
 					{{ boleta_form.fecha_emision.errors }}
@@ -50,8 +53,8 @@
 				</div>
 				<div class="subcl type-text">
 					{{ boleta_form.monto.errors }}
-					<label for="id_monto">Importe:</label>
-					<input type="text" name="monto" id="id_monto" value="0.0"/>
+					<label for="id_importe">Importe:</label>
+					<input type="text" name="importe" id="id_importe" value="0"/>
 				</div>
 				<div class="subcl type-text">
 					{{ boleta_form.saldo.errors }}
@@ -129,12 +132,10 @@
 		var fecha_emision = new Date();
 		var meses = new Array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
 		var codigo = null;
-		var precio_pension = null;
 		var cursos = null;
 		$(document).ready(function() {
 			run();
 			txtfecha = $("#id_fecha_emision");
-			saldo = $("#id_saldo");
 			cursos = $("#curso")
 			$("#id_contro_pago").val(meses[fecha_emision.getMonth()]+" "+fecha_emision.getYear().toString().substr(0,2))
 			codigo = $("#id_codigo_alumno").focus();
@@ -159,9 +160,7 @@
 				$("#id_ciclo_seccion").val(data.ciclo_seccion);
 				$("#id_turno").val(data.turno);
 				$("#id_carrera").val(data.carrera);
-				saldo.val(data.precio_pension);
 				$("#id_importe").focus();
-				precio_pension = data.precio_pension
 				getCursos(codigo.val());
 			});
 		}
