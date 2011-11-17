@@ -97,15 +97,5 @@ def anular(request):
             )
             boleta.valido = False
             boleta.save()
-            tipo_boleta = request.POST["codigo_alumno"]
-            if tipo_boleta == 1:
-                pension=Pago.objetcs.get(boleta=boleta).pension
-                pension.total=pension.total-boleta.precio
-                pension.saldo=pension.saldo+boleta.precio
-                pension.save()
-                precio = pension.precio
-                precio.deuda=precio.deuda+boleta.precio
-                precio.total=precio.total-boleta.precio
-                precio.save()
         return redirect('/pago/anular')
     return render(request, 'pago/anular.html',)
