@@ -2,8 +2,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import simplejson
+from django.core import serializers
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.db import connection
 from models import Boleta
 from alumno.models import Alumno
 from campus.models import Campus
@@ -59,3 +61,20 @@ def boleta_imprimir(request, boleta_id, campus_id):
     boleta = Boleta.objects.get(pk = boleta_id)
     campus = Campus.objects.get(pk = campus_id)
     return render(request, 'boleta/boleta_imprimir.html', {'boleta' : boleta, 'campus' : campus})
+
+@login_required(login_url='/wvb/')
+def boleta_json(request, serie, numero):
+    cursor = connection.cursor()
+    boleta = cursor.execute("SELECT * FROM boleta_alumno WHERE serie = '%s' AND numero = '%s'" % (serie, numero)).fetchone()
+    boleta_json = {
+				  "valido" : boleta[0],
+				  "serie" : boleta[1],
+				  "saldo" : str(boleta[2]),
+				  "numero" : boleta[3],
+				  "fecha" : str(boleta[4]),
+				  "importe" : str(boleta[5]),
+				  "concepto" : boleta[6],
+				  "alumno" : u'%s, %s' % (boleta[7],boleta[8]),
+				  "codigo" : boleta[9],
+				  }
+    return HttpResponse(simplejson.dumps(boleta_json), mimetype='application/json')

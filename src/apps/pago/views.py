@@ -29,7 +29,7 @@ def pago_pension(request):
                         valido = True,
                         importe = importe,
                         saldo = Decimal(request.POST["saldo"])
-					)
+                    )
         boleta.save()
         alumnocampus.deuda = alumnocampus.deuda - importe
         alumnocampus.total = alumnocampus.total + importe
@@ -90,12 +90,11 @@ def pago_general(request):
 @login_required(login_url='/wvb/')
 def anular(request):
     if request.method == 'POST':
-        if tipo_boleta == 0:
-            boleta = Boleta.objects.get(
-                serie = request.POST["codigo_alumno"][0:3],
-                numero =request.POST["codigo_alumno"][4:11],
-            )
-            boleta.valido = False
-            boleta.save()
+        boleta = Boleta.objects.get(
+            serie = request.POST["serie"],
+            numero = request.POST["numero"],
+        )
+        boleta.valido = False
+        boleta.save()
         return redirect('/pago/anular')
     return render(request, 'pago/anular.html',)

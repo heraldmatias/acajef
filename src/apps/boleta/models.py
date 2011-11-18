@@ -24,6 +24,11 @@ class Boleta(models.Model):
     saldo         = models.DecimalField('saldo', max_digits=8,decimal_places=1)
     observacion   = models.TextField('Observación', blank=True,null=True)
 
+    class Meta:
+        verbose_name = 'Boleta'
+        verbose_name_plural = 'Boletas'
+        unique_together = (('serie', 'numero'),)
+
     def __unicode__(self):
         return u'%s - %s' % (self.serie,self.numero)
 

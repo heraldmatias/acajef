@@ -14,67 +14,54 @@
 		<fieldset>
 			<legend>Pensión</legend>
 			<div id="imprimir" class="subcolumns">
-				<div class="c50l">
-					<div class="subcl type-text">
-						{{ codigo.errors }}
-						<label for="id_codigo_alumno">Codigo Alumno:</label>
-						<input type="text" id="id_codigo_alumno" name="codigo_alumno" value="{{ boleta.alumno.codigo }}" maxlength="6" readonly="readonly"/>
-					</div>
-				</div>
-				<div class="c50r">
-					<div class="subcl type-text">
-						{{ serie.errors }}
-						<label for="id_boleta">Boleta:</label>
-						<input type="text" id="id_boleta" name="codigo_boleta" value="{{ boleta.serie }}-{{ boleta.numero }}" readonly="readonly"/>
-					</div>
-				</div>
 				<div class="subcolumns">
-					<div class="subcl type-text">
-						{{ alumno.errors }}
-						<label for="id_alumno">Alumno:</label>
-						<input type="text" id="id_alumno" name="alumno" value="{{ boleta.alumno.get_full_name }}" readonly="readonly"/>
-					</div>
+					
 					<div class="c50l">
+						<div class="subcl type-text">
+							{{ serie.errors }}
+							<label for="id_boleta">Serie:</label>
+							<input type="text" id="id_serie" name="serie" value="{{ boleta.serie }}" maxlength='3'/>
+						</div>
+						<div class="subcl type-text">
+							{{ codigo.errors }}
+							<label for="id_codigo_alumno">Codigo Alumno:</label>
+							<input type="text" id="id_codigo_alumno" name="codigo_alumno" value="{{ boleta.alumno.codigo }}" maxlength="6" readonly="readonly"/>
+						</div>
 						<div class="subcl type-text">
 							<label for="id_concepto">Concepto:</label>
 							<input type="text" name="concepto" id="id_concepto" value="{{ boleta.concepto }}" readonly="readonly"/>
+						</div>
+						<div class="subcl type-text">
+							<label for="id_importe">Importe:</label>
+							<input type="text" name="importe" id="id_importe" value="{{ boleta.importe }}" readonly="readonly"/>
+						</div>
+					</div>
+					<div class="c50r">
+						<div class="subcl type-text">
+							{{ serie.errors }}
+							<label for="id_boleta">Número:</label>
+							<input type="text" id="id_numero" name="numero" value="{{ boleta.numero }}" maxlength='7'/>
+						</div>
+						<div class="subcl type-text">
+							{{ alumno.errors }}
+							<label for="id_alumno">Alumno:</label>
+							<input type="text" id="id_alumno" name="alumno" value="{{ boleta.alumno.get_full_name }}" readonly="readonly"/>
 						</div>
 						<div class="subcl type-text">
 							<label for="id_fecha_emision">Fecha Emisión:</label>
 							<input type="text" name="fecha_emision" id="id_fecha_emision" value="{{ boleta.fecha_emision }}" readonly="readonly"/>
 						</div>
 						<div class="subcl type-text">
-							<label for="id_importe">Importe:</label>
-							<input type="text" name="importe" id="id_importe" value="{{ boleta.importe }}" readonly="readonly"/>
-						</div>
-						<div class="subcl type-text">
 							<label for="id_saldo">Saldo:</label>
 							<input type="text" name="saldo" id="id_saldo" value="{{ boleta.saldo }}" readonly="readonly"/>
-						</div>
-					</div>
-					<div class="c50r">
-						<div class="subcl type-text">
-							<label for="id_carrera">Carrera:</label>
-							<input type="text" name="carrera" id="id_carrera" value="{{ campus.ciclo.carrera }}" readonly="readonly"/>
-						</div>
-						<div class="subcl type-text">
-							<label for="id_saldo">Ciclo - Seccion:</label>
-							<input type="text" name="ciclo_seccion" id="id_ciclo_seccion" value="{{ campus.ciclo.ciclo }} - {{ campus.get_seccion }}" readonly="readonly"/>
-						</div>
-						<div class="subcl type-text">
-							<label for="id_saldo">Turno:</label>
-							<input type="text" name="turno" id="id_turno" value="{{ campus.get_turno }}" readonly="readonly"/>
-						</div>
-						<div class="subcl type-text">
-							<label for="id_contro_pago">Control Pago:</label>
-							<input type="text" name="contro_pago" id="id_contro_pago" readonly="readonly"/>
 						</div>
 					</div>
 				</div>
 			</div>
 		</fieldset>
 		<div class="type-button">
-			<input type="botton" value="Anular" class="botton" id="bt_Anular" name="Anular" />
+			<input type="submit" value="Anular" class="submit" id="bt_anular" name="anular"/>
+			<input type="botton" value="Buscar" class="botton" id="bt_buscar" name="buscar" onclick='getBoleta();'/>
 		</div>
 	</form>
 {% endblock %}
@@ -84,20 +71,14 @@
 {% block scriptjs %}
 	<script src="{{ STATIC_URL }}js/base.js" type="text/javascript"></script>
 	<script src="{{ STATIC_URL }}js/boleta.js" type="text/javascript"></script>
-	<script src="{{ STATIC_URL }}js/jquery.selectboxes.js" type="text/javascript"></script>
 	<script>
-		var txtfecha = null;
-		var precio_pension = null;
-		var saldo = null;
-		var fecha_emision = new Date();
-		var meses = new Array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
 		var codigo = null;
-		var precio_pension = null;
+		var serie = null;
+		var numero = null;
 		$(document).ready(function() {
 			run();
-			txtfecha = $("#id_fecha_emision");
-			saldo = $("#id_saldo");
-			$("#id_contro_pago").val(meses[fecha_emision.getMonth()]+" "+fecha_emision.getYear().toString().substr(0,2))
+			serie = $('#id_serie');
+			numero = $('#id_numero');
 			codigo = $("#id_codigo_alumno").focus();
 			$( "#id_alumno" ).autocomplete({
 				source: "/boleta/boleta-alumno-campus/json/",
@@ -106,23 +87,18 @@
 				},
 				minLength: 2,
 			});
-			getFechaHora();
 		});
-		function getFechaHora(){
-			fecha_emision=new Date();
-			txtfecha.val(fecha_emision.getDate()+"/"+(fecha_emision.getMonth()+1)+"/"+fecha_emision.getFullYear()+" "+fecha_emision.getHours()+":"+fecha_emision.getMinutes()+":"+fecha_emision.getUTCSeconds());
-			setTimeout(getFechaHora,1000);
-		}
-		function getCampus(codigo_alumno){
-			$.getJSON("/boleta/boleta-campus/"+codigo_alumno+"/json/",function(data){
-				codigo.val(data.codigo)
+		function getBoleta(){
+			$.getJSON("/boleta/"+serie.val()+"/"+numero.val()+"/json/",function(data){
+				data.valido
+				$("#id_serie").val(data.serie);
+				$("#id_codigo_alumno").val(data.codigo);
+				$("#id_concepto").val(data.concepto);
+				$("#id_importe").val(data.importe);
+				$("#id_numero").val(data.numero);
 				$("#id_alumno").val(data.alumno);
-				$("#id_ciclo_seccion").val(data.ciclo_seccion);
-				$("#id_turno").val(data.turno);
-				$("#id_carrera").val(data.carrera);
-				saldo.val(data.precio_pension);
-				$("#id_importe").focus();
-				precio_pension = data.precio_pension
+				$("#id_fecha_emision").val(data.fecha);
+				$("#id_saldo").val(data.saldo);
 			});
 		}
 	</script>
