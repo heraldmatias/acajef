@@ -214,27 +214,33 @@
 		var n_alumnos = 0;
 		var year = new Date().getFullYear()+1;
 		var cell_count = null;
+		var fecha_fin = null;
+		var fecha_inicio = null;
 		var seccion = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'LAB. 1', 'LAB. 2', 'LAB. 3'];
 		$(document).ready(function() {
 			run();
-			$("#id_fecha_inicio").datepicker({
+			fecha_inicio = $("#id_fecha_inicio").datepicker({
 						  changeMonth: true,
 						  changeYear: true,
 						  closeText: 'X',
 						  dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
 						  gotoCurrent: true,
 						  monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-						  yearRange: '1930:'+year,
+						  yearRange: '1988:'+year,
 						  dateFormat: 'dd/mm/yy',
-						  currentText: 'Now'});
-			$("#id_fecha_fin").datepicker({
+						  currentText: 'Now',
+						  onSelect: function(dateText, inst) {
+								fecha_fin.datepicker("option", "minDate", fecha_inicio.datepicker("getDate"));
+								}
+						  });
+			fecha_fin = $("#id_fecha_fin").datepicker({
 						  changeMonth: true,
 						  changeYear: true,
 						  closeText: 'X',
 						  dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
 						  gotoCurrent: true,
 						  monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-						  yearRange: '1930:'+year,
+						  yearRange: '1988:'+year,
 						  dateFormat: 'dd/mm/yy',
 						  currentText: 'Now'});
 			asignaturas=$("#asignaturas");

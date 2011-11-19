@@ -4,7 +4,7 @@ Instalación
 - sudo apt-get install python-dev
 - python bootstrap.py -d
 - bin/buildout -vvv
-- python manage.py collectstatic
+- bin/wvb collectstatic
 - mkdir media/alumno
 - mkdir media/curriculum
 - Recuerda que usamos grappelli
@@ -31,4 +31,4 @@ Un servidor
 ------------------------
 VIEW
 ------------------------
-CREATE VIEW "boleta_alumno" AS   select bb.valido, bb.serie,bb.saldo,bb.numero,bb.fecha_emision, bb.importe,bc.concepto,a.apellido,a.nombre,a.codigo from boleta_boleta bb inner join boleta_concepto bc on bb.concepto_id = bc.id inner join alumno_alumno a on bb.alumno_id = a.id
+CREATE VIEW "BOLETA_ALUMNO" AS   select bb.valido, bb.serie,bb.saldo,bb.numero,bb.fecha_emision, bb.importe,bc.concepto,a.apellido,a.nombre,a.codigo from boleta_boleta bb inner join boleta_concepto bc on bb.concepto_id = bc.id inner join alumno_alumno a on bb.alumno_id = a.id

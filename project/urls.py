@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     (r'^pago/', include('pago.urls')),
     (r'^boleta/', include('boleta.urls')),
     (r'^calificacion/', include('calificacion.urls')),
+    (r'^print/', include('print.urls')),
 )
 
 if settings.DEBUG:

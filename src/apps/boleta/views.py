@@ -30,10 +30,10 @@ def get_serie_numero():
     return numero_serie
 
 @login_required(login_url='/wvb/')
-def boletas(request):
+def boleta_historial(request):
     date_ini = datetime.datetime.today().replace(minute=0,hour=0)
     boletas = Boleta.objects.filter(fecha_emision__range=(date_ini,datetime.datetime.today())).order_by("-fecha_emision")
-    return render(request, "boleta/boletas.html",{ 'boletas':boletas, },)
+    return render(request, "boleta/boleta_historial.html",{ 'boletas':boletas, },)
 
 @login_required(login_url='/wvb/')
 def alumno_boleta_json(request,codigo_alumno):

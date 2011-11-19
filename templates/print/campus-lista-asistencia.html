@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<style type="text/css">
+			*{
+				font-size:11px;
+			}
+			#lista-asistencia {
+				border-color: black;
+				border-style: solid;
+				margin: 5px auto 5px auto;
+				padding: 2px 2px 2px 2px;
+				border-width: 1px;
+			}
+			#titulo{
+				font-size:15px;
+				text-align:center;
+				font-width:bold;
+			}
+		</style>
+    </head>
+    <body>
+		<form method="post" action="#" class="yform full" role="application">
+			{% for dias in asistencia %}
+				<p id='titulo'>Lista de Asistencia</p>
+				<table>
+					<tr>
+						<th>Carrera</th>
+						<td>{{ campus.ciclo.carrera.carrera }}</td>
+						<th>Ciclo - Sección</th>
+						<td>{{ campus.ciclo.ciclo }} - {{ campus.get_seccion}}</td>
+					</tr>
+					<tr>
+						<th>Turno</th>
+						<td>{{ campus.get_turno }}</td>
+					</tr>
+				</table>
+				<table id='lista-asistencia'>
+					<colgroup span="1" width="50px"></colgroup>
+					<colgroup span="10" width="5px"></colgroup>
+					<thead>
+						<tr>
+							<th>DÍAS</th>
+							{% for dia in dias %}
+								<th>{{ dia.0 }}</th>
+							{% endfor %}
+						</tr>
+						<tr>
+							<th>ALUMNOS</th>
+							{% for dia in dias %}
+								<th>{{ dia.1 }}</th>
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for alumno in alumnos %}
+						<tr>
+							<td>{{ alumno.alumno.get_full_name }}</td>
+							<th>&nbsp;</th>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<pdf:pagenumber>
+				<pdf:nextpage>
+			{% endfor %}
+		</form>
+	</body>
+</html>
