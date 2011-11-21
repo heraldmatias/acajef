@@ -89,6 +89,7 @@
 			});
 		});
 		function getBoleta(){
+			alert("/boleta/"+serie.val()+"/"+numero.val()+"/json/");
 			$.getJSON("/boleta/"+serie.val()+"/"+numero.val()+"/json/",function(data){
 				data.valido
 				$("#id_serie").val(data.serie);

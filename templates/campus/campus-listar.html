@@ -132,10 +132,6 @@
 					window.location.href='/print/lista/asistencia/'+$("#campus_id").val()+'/';
 			});
 		});
-		function sortoptions(sort){
-			var $this = $(this);
-			$this.sortOptions(sort.dir == "asc" ? true : false);
-		}
 		function getAlumnosMatriculados(){
 			seccion = $("#id_seccion").val();
 			fecha_incio = $("#id_fecha_inicio").val().replace(/[/]/g,"");

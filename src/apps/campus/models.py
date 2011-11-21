@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from institucion.models import Ciclo
-from boleta.models import Concepto
 from alumno.models import Alumno
+from concepto.models import Concepto
 
 """
 App for Campus
@@ -50,6 +50,7 @@ class Campus(models.Model):
     class Meta:
         verbose_name = "Campus"
         verbose_name_plural = "Campus"
+        unique_together = (('ciclo', 'seccion','semestre','fecha_inicio','fecha_fin','turno','precio'),)
 
     def __unicode__(self):
         return u'%s - %s' % (self.get_turno(),self.get_seccion())
@@ -68,3 +69,7 @@ class AlumnoCampus(models.Model):
     total      = models.DecimalField('Total', max_digits=8, decimal_places=1)
     deuda      = models.DecimalField('Deuda', max_digits=8, decimal_places=1)
     confirmado = models.BooleanField('¿Confirmado?', default = False)
+    actual     = models.BooleanField('Actual', default = True)
+
+    class Meta:
+        unique_together = (('alumno', 'campus','total','deuda','confirmado','actual'),)

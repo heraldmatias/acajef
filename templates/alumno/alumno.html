@@ -41,6 +41,11 @@
 		    </div>
 		    <div class="c50r">
 				<div class="subcl type-text">
+					{{ alumno_form.apoderado.errors }}
+					<label for="id_carrera">Apoderado:</label>
+					{{ alumno_form.apoderado }}
+				</div>
+				<div class="subcl type-text">
 					{{ alumno_form.email.errors }}
 					<label for="id_email">E-mail:</label>
 					{{ alumno_form.email }}
@@ -50,15 +55,15 @@
 					<label for="id_telefono">Teléfono:</label>
 					{{ alumno_form.telefono }}
 				</div>
+				<div class="subcl type-select">
+					{{ alumno_form.sexo.errors }}
+					<label for="id_sexo">Sexo:</label>
+					{{ alumno_form.sexo }}
+				</div>
 				<div class="subcl type-text">
 					{{ alumno_form.direccion.errors }}
 					<label for="id_carrera">Dirección:</label>
 					{{ alumno_form.direccion }}
-				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.apoderado.errors }}
-					<label for="id_carrera">Apoderado:</label>
-					{{ alumno_form.apoderado }}
 				</div>
 		  </div>
         </fieldset>
@@ -86,7 +91,7 @@
 						  yearRange: '1950:'+new Date().getFullYear(),
 						  dateFormat: 'dd/mm/yy',
 						  currentText: 'Now'});
-			$("#id_direccion").attr("rows","7");
+			$("#id_direccion").attr("rows","4");
 			$("#id_dni").focus();
 		});
 	</script>

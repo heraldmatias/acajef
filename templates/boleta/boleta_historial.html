@@ -5,6 +5,9 @@
 		#id_alumno{
 			width: 97.8%;
 		}
+		table {
+			font-size:11px;
+		}
 	</style>
 {% endblock %}
 {% block content %}
@@ -16,7 +19,7 @@
 				<div id="tabs">
 					<ul>
 						<li><a href="#tabs-1">Hoy</a></li>
-						<li><a href="#tabs-2">Por Fecha</a></li>
+						<li><a href="#tabs-2">Personalizado</a></li>
 					</ul>
 					<div id="tabs-1">
 						<div class="subcolumns">
@@ -26,8 +29,9 @@
 										<th>Serie - Número</th>
 										<th>Alumno</th>
 										<th>Concepto</th>
-										<th>Monto</th>
+										<th>Importe</th>
 										<th>Válido</th>
+										<th>&nbsp;</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -36,8 +40,9 @@
 										<td>{{ boleta }}</td>
 										<td>{{ boleta.alumno }}</td>
 										<td>{{ boleta.concepto }}</td>
-										<td>S/. {{ boleta.monto }}</td>
+										<td>S/. {{ boleta.importe }}</td>
 										<td><input type="checkbox" checked={{ boleta.valido }}/></td>
+										<td></td>
 									</tr>
 									{% endfor %}
 								</tbody>
@@ -51,23 +56,45 @@
 						</div>
 					</div>
 					<div id="tabs-2">
-						<div class="c33l">
-							<div class="subcl type-text">
-								<label for="id_fecha_inicio">Fecha Inicio:</label>
-								<input type="text" id="id_fecha_inicio" name="codigo_alumno" maxlength="6" onkeypress="if(event.keyCode==13){getCampus(this.value);return false;}"/>
+						<fieldset>
+							<legend>Opciones</legend>
+							<div class="subcolumns">
+								<div class="c50l">
+									<div class="subcl type-text">
+										<label for="id_boleta">Serie:</label>
+										<input type="text" id="id_serie" name="serie"/>
+									</div>
+									<div class="subcl type-text">
+										<label for="id_codigo_alumno">Alumno:</label>
+										<input type="text" id="id_alumno" name="alumno"/>
+									</div>
+									<div class="subcl type-check">
+										<label>Anulado:</label>
+										<div>
+											<label for="id_anulado">&nbsp;</label>
+											<input type="checkbox" id="id_anulado" name="anulado"/>
+										</div>
+									</div>
+								</div>
+								<div class="c50r">
+									<div class="subcl type-text">
+										<label for="id_boleta">Número:</label>
+										<input type="text" id="id_numero" name="numero"/>
+									</div>
+									<div class="subcl type-text">
+										<label for="id_fecha_inicio">Fecha Inicio:</label>
+										<input type="text" id="id_fecha_inicio" name="fecha_inicio"/>
+									</div>
+									<div class="subcl type-text">
+										<label for="id_fecha_fin">Fecha Fin:</label>
+										<input type="text" id="id_fecha_fin" name="fecha_fin"/>
+									</div>
+								</div>
 							</div>
-						</div>
-						<div class="c33l">
-							<div class="subcl type-text">
-								{{ serie.errors }}
-								<label for="id_fecha_fin">Fecha Fin:</label>
-								<input type="text" id="id_fecha_fin" name="codigo_boleta" value=""readonly="readonly"/>
-							</div>
-						</div>
-						<div class="c33l" style='height: 100%;'>
-							<div class="type-button">
-								<input type="button" value="Actualizar" class="button" id="hoy" name="hoy" onclick="getBoletasDate();"/>
-							</div>
+							
+						</fieldset>
+						<div class="type-button">
+							<input type="button" value="Actualizar" class="button" id="hoy" name="hoy" onclick="getBoletasDate();"/>
 						</div>
 						<div class="subcolumns">
 							<table id="tb_boletas_date">
@@ -76,8 +103,9 @@
 										<th>Serie - Número</th>
 										<th>Alumno</th>
 										<th>Concepto</th>
-										<th>Monto</th>
+										<th>Importe</th>
 										<th>Válido</th>
+										<th>&nbsp;</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -120,6 +148,9 @@
 			});
 			$("#id_contro_pago").val(meses[fecha_emision.getMonth()]+" "+fecha_emision.getYear().toString().substr(0,2))
 		});
+		function redirectAnular(){
+			
+		}
 	</script>
 	
 	
@@ -170,8 +201,6 @@
 					dateFormat: 'mm/dd/yy', 
 					currentText: 'Now'}
 					);
-				$('#hoy').click(function(){hoy=true;});
-                //imprimir();
                 sumarMontosHoy();
         	});
 			function getBoletas(){

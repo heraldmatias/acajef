@@ -9,7 +9,7 @@ setup(
     version = "1.0",
     url = '',
     license = 'GPL V. 3',
-    description = "Aplicacion  a medida del I.S.T. Werner Von Braun",
+    description = "Aplicacion a medida del I.S.T. Werner Von Braun",
     long_description = read('README'),
 
     author = 'Herald Matias Olivares,Cristian, Micky Miseck',

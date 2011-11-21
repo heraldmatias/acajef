@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from decimal import Decimal
-from models import Pension
 from django.contrib.auth.decorators import login_required
-from boleta.models import Boleta, Concepto
+from boleta.models import Boleta
+from concepto.models import Concepto
 from boleta.views import get_serie_numero
 from alumno.models import Alumno
 from docente.models import Docente
 from calificacion.models import Recuperacion, Nota
-from models import Pension
+from django.db.models import Q
 from boleta.forms import BoletaForm
+from campus.models import AlumnoCampus
 import datetime
 
 @login_required(login_url='/wvb/')
@@ -18,10 +19,9 @@ def pago_pension(request):
         numero_serie = get_serie_numero()
         importe = Decimal(request.POST["importe"])
         alumno = Alumno.objects.get(codigo=request.POST["codigo_alumno"])
-        campus = alumno.alumnocampus_set.all().order_by("-id")[:1]
-        alumnocampus = campus[0]
+        alumnocampus = AlumnoCampus.objects.get(Q(actual = True), Q(alumno = alumno))
         boleta = Boleta.objects.create(
-                        alumno = alumno,
+                        alumno = alumnocampus,
                         serie = numero_serie["serie"],
                         numero = numero_serie["numero"],
                         concepto = alumnocampus.campus.precio,
@@ -34,8 +34,7 @@ def pago_pension(request):
         alumnocampus.deuda = alumnocampus.deuda - importe
         alumnocampus.total = alumnocampus.total + importe
         alumnocampus.save()
-        Pension.objects.create(alumno_campus = alumnocampus, boleta = boleta).save()
-        return redirect(u'%s/%s' % (boleta.get_url_imprimir(),str(alumnocampus.campus.id)))
+        return redirect(u'%s/' % (boleta.get_url_imprimir()))
     numero_serie = get_serie_numero()
     return render(request, 'pago/pago_pension.html', { 'numero_serie': numero_serie, },)
 
@@ -45,9 +44,9 @@ def pago_subsanacion(request):
         numero_serie = get_serie_numero()
         importe = Decimal(request.POST["importe"])
         alumno = Alumno.objects.get(codigo=request.POST["codigo_alumno"])
-        campus = alumno.alumnocampus_set.all().order_by("-id")[:1]
+        alumnocampus = AlumnoCampus.objects.get(Q(actual = True), Q(alumno = alumno))
         boleta = Boleta.objects.create(
-                        alumno = alumno,
+                        alumno = alumnocampus,
                         serie = numero_serie["serie"],
                         numero = numero_serie["numero"],
                         concepto = Concepto.objects.get(pk = request.POST['concepto']),
@@ -58,7 +57,7 @@ def pago_subsanacion(request):
                     )
         boleta.save()
         Recuperacion.objects.create(nota = Nota.objects.get(pk = request.POST["curso"]), boleta = boleta).save()
-        return redirect(u'%s/%s' % (boleta.get_url_imprimir(),str(campus[0].campus.id)))
+        return redirect(u'%s/' % (boleta.get_url_imprimir()))
     numero_serie = get_serie_numero()
     docentes = Docente.objects.filter(activo=True)
     conceptos = Concepto.objects.filter(concepto__icontains = 'Subsanar')
@@ -69,9 +68,9 @@ def pago_general(request):
     if request.method == 'POST':
         numero_serie = get_serie_numero()
         alumno = Alumno.objects.get(codigo = request.POST["codigo_alumno"])
-        campus = alumno.alumnocampus_set.all().order_by("-id")[:1]
+        alumnocampus = AlumnoCampus.objects.get(Q(actual = True), Q(alumno = alumno))
         boleta = Boleta.objects.create(
-                alumno = alumno,
+                alumno = alumnocampus,
                 serie = numero_serie["serie"],
                 numero = numero_serie["numero"],
                 concepto = Concepto.objects.get(pk = request.POST["concepto"]),
@@ -81,7 +80,7 @@ def pago_general(request):
                 saldo = 0
             )
         boleta.save()
-        return redirect(u'%s/%s' % (boleta.get_url_imprimir(),str(campus[0].campus.id)))
+        return redirect(u'%s/' % (boleta.get_url_imprimir()))
     numero_serie = get_serie_numero()
     conceptos = Concepto.objects.exclude(concepto__icontains='Pensi')
     boleta_form = BoletaForm()

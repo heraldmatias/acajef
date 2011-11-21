@@ -5,7 +5,7 @@ from django.utils import simplejson
 from django.contrib.auth.decorators import login_required
 from institucion.forms import CicloForm
 from institucion.models import Carrera, Ciclo
-from pago.models import Pension
+from concepto.models import Concepto
 from docente.models import Docente
 from curso.models import Curso, CursoDocente
 from alumno.models import Alumno
@@ -70,7 +70,7 @@ def campus(request):
 def campus_listar(request):
     campus_search_form = CampusSearchForm()
     carrera = Carrera.objects.get(pk=1)
-    ciclos = carrera.ciclo_set.all().order_by('-pk')
+    ciclos = carrera.ciclo_set.all().order_by('pk')
     return render(request,
                     'campus/campus-listar.html',
                     { 'campus_search_form': campus_search_form,"ciclos":ciclos, })
@@ -81,7 +81,7 @@ def campus_new_listar(request, campus_id):
     campus = Campus.objects.get(pk = campus_id)
     campusalumno = AlumnoCampus.objects.filter(campus = campus)
     carrera = Carrera.objects.get(pk=1)
-    ciclos = carrera.ciclo_set.all().order_by('-pk')
+    ciclos = carrera.ciclo_set.all().order_by('pk')
     return render(request,
                     'campus/campus-listar.html',
                     {'campus_search_form' : campus_search_form, "ciclos" : ciclos, 'campusalumno' : campusalumno, })

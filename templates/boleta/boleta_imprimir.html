@@ -17,7 +17,7 @@
 					<div class="subcl type-text">
 						{{ codigo.errors }}
 						<label for="id_codigo_alumno">Codigo Alumno:</label>
-						<input type="text" id="id_codigo_alumno" name="codigo_alumno" value="{{ boleta.alumno.codigo }}" maxlength="6" readonly="readonly"/>
+						<input type="text" id="id_codigo_alumno" name="codigo_alumno" value="{{ boleta.alumno.alumno.codigo }}" maxlength="6" readonly="readonly"/>
 					</div>
 				</div>
 				<div class="c50r">
@@ -31,7 +31,7 @@
 					<div class="subcl type-text">
 						{{ alumno.errors }}
 						<label for="id_alumno">Alumno:</label>
-						<input type="text" id="id_alumno" name="alumno" value="{{ boleta.alumno.get_full_name }}" readonly="readonly"/>
+						<input type="text" id="id_alumno" name="alumno" value="{{ boleta.alumno.alumno.get_full_name }}" readonly="readonly"/>
 					</div>
 					<div class="c50l">
 						<div class="subcl type-text">
@@ -54,15 +54,15 @@
 					<div class="c50r">
 						<div class="subcl type-text">
 							<label for="id_carrera">Carrera:</label>
-							<input type="text" name="carrera" id="id_carrera" value="{{ campus.ciclo.carrera }}" readonly="readonly"/>
+							<input type="text" name="carrera" id="id_carrera" value="{{ boleta.alumno.campus.ciclo.carrera }}" readonly="readonly"/>
 						</div>
 						<div class="subcl type-text">
 							<label for="id_saldo">Ciclo - Seccion:</label>
-							<input type="text" name="ciclo_seccion" id="id_ciclo_seccion" value="{{ campus.ciclo.ciclo }} - {{ campus.get_seccion }}" readonly="readonly"/>
+							<input type="text" name="ciclo_seccion" id="id_ciclo_seccion" value="{{ boleta.alumno.campus.ciclo.ciclo }} - {{ boleta.alumno.campus.get_seccion }}" readonly="readonly"/>
 						</div>
 						<div class="subcl type-text">
 							<label for="id_saldo">Turno:</label>
-							<input type="text" name="turno" id="id_turno" value="{{ campus.get_turno }}" readonly="readonly"/>
+							<input type="text" name="turno" id="id_turno" value="{{ boleta.alumno.campus.get_turno }}" readonly="readonly"/>
 						</div>
 						<div class="subcl type-text">
 							<label for="id_contro_pago">Control Pago:</label>

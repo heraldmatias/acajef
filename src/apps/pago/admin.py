@@ -1,4 +1,4 @@
-from models import Pension
 from django.contrib import admin
+#from models import Pension
 
-admin.site.register(Pension)
+#admin.site.register(Pension)
