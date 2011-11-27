@@ -10,9 +10,9 @@ Instalación
 - Recuerda que usamos grappelli
 	http://readthedocs.org/docs/django-grappelli/en/latest/quickstart.html#installation
 
-------------------------
+-------------------------
 Tareas
-------------------------
+-------------------------
 Implementar un trigger que cuando anulen una boleta si por curso o pension estas vuelvan a cero
 El sistema debe emitir si el pago de pension procede o no, no procede cuando el alumno ya pago sus cinco pensiones de ciclo
 validar campus si el alumno es seleccionado de un aula se debe matricular en un ciclo mayor a su actual
