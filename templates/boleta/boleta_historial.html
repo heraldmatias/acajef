@@ -91,13 +91,13 @@
 									</div>
 								</div>
 							</div>
-							
 						</fieldset>
 						<div class="type-button">
 							<input type="button" value="Actualizar" class="button" id="hoy" name="hoy" onclick="getBoletasDate();"/>
+							<input type="reset" value="Limpiar" class="reset" id="reset" name="reset"/>
 						</div>
 						<div class="subcolumns">
-							<table id="tb_boletas_date">
+							<table id="tb_boletas_search">
 								<thead>
 									<tr>
 										<th>Serie - Número</th>
@@ -133,11 +133,58 @@
 {% block scriptjs %}
 	<script src="{{ STATIC_URL }}js/base.js" type="text/javascript"></script>
 	<script src="{{ STATIC_URL }}js/boleta.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL }}js/jquery.tablesorter.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL }}js/jquery.uitablefilter.js" type="text/javascript"></script>
 	<script>
+		var serie = null, numero = null, alumno = null, fecha_inicio = null,fecha_fin = null,anulado = null;
 		var meses = new Array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
 		var fecha_emision = new Date({{ boleta.fecha_emision__year }});
+		var tb_boletas = null;
+		var tb_boletas_search = null;
+		var alumno_codigo;
 		$(document).ready(function() {
 			run();
+			serie = $("#id_serie");
+			numero = $("#id_numero");
+			alumno = $( "#id_alumno" ).autocomplete({
+						source: "/boleta/boleta-alumno-campus-id/json/",
+						select: function( event, ui ) {
+							alumno_codigo = ui.item.id;
+						},
+						minLength: 2,
+					});
+			anulado = $("#id_anulado");			
+			tboletas = $("#tb_boletas");
+			tb_boletas_search = $("#tb_boletas_search");
+			$("#tabs").tabs();
+			$("#tb_boletas").tablesorter();
+			fecha_inicio = $("#id_fecha_inicio").datepicker({
+				changeMonth: true,
+				changeYear: true, 
+				closeText: 'X',
+				dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+				gotoCurrent: true,
+				monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+				yearRange: '1988:'+fecha_emision.getFullYear(),
+				dateFormat: 'mm/dd/yy',
+				currentText: 'Now',
+				onSelect: function(dateText, inst) {
+					fecha_fin.datepicker("option", "minDate", fecha_inicio.datepicker("getDate"));
+					}
+				}
+			);
+			fecha_fin = $("#id_fecha_fin").datepicker({
+				changeMonth: true,
+				changeYear: true, 
+				closeText: 'X',
+				dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+				gotoCurrent: true,
+				monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+				yearRange: '1988:'+fecha_emision.getFullYear(),
+				dateFormat: 'mm/dd/yy', 
+				currentText: 'Now'}
+				);
+			sumarMontosHoy();
 			$("#bt_imprimir").button({
 				text:true,
 				icons:{
@@ -149,60 +196,28 @@
 			$("#id_contro_pago").val(meses[fecha_emision.getMonth()]+" "+fecha_emision.getYear().toString().substr(0,2))
 		});
 		function redirectAnular(){
-			
+			var str_options = null;
+			str_options+=serie.val() === "" ? 'no/' : serie.val()+"/";
+			str_options+=numero.val() === "" ? 'no/' : numero.val()+"/";
+			str_options+=alumno.val() === "" ? 'no/' : alumno.val()+"/";
+			str_options+=fecha_inicio.val() === "" ? 'no/' : fecha_inicio.val().replace(/[/]/g,"-")+"/";
+			str_options+=fecha_fin.val() === "" ? 'no/' : fecha_fin.val().replace(/[/]/g,"-")+"/";
+			str_options+=anulado.val() === "" ? 'no/' : anulado.val()+"/";
+			$.getJSON("/boleta/buscar/"+srt_options+"json/",
+        	 function(data){
+	            $.each(data,function(key,value){
+					
+        	    });
+        	    tboletas.tablesorter();
+        	    sumarMontosHoy();
+			 });
 		}
 	</script>
-	
-	
-	
-		<script src="{{ STATIC_URL }}js/jquery.selectboxes.js" type="text/javascript"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tablesorter.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.uitablefilter.js"></script>
         <script type="text/javascript">
-        	var academicomenu=null;
         	var talumnos = null;
         	var divcont=null;
         	var saldo=null;
         	var fecha_emision=new Date();
-        	var fecha_inicio = null;
-        	var fecha_fin = null;
-        	var meses=new Array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
-        	var tboletas = null;
-        	var tboletasdate = null;
-        	$(document).ready(function() {
-        	    divcont=$("#col3_content");
-        	    tboletas = $("#tb_boletas");
-        	    tboletasdate = $("#tb_boletas_date");
-        	    $("#tabs").tabs();
-        	    $("#tb_boletas").tablesorter();
-        		fecha_inicio = $("#id_fecha_inicio").datepicker({
-					changeMonth: true,
-					changeYear: true, 
-					closeText: 'X',
-					dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-					gotoCurrent: true,
-					monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-					yearRange: '1988:'+fecha_emision.getFullYear(),
-					dateFormat: 'mm/dd/yy',
-					currentText: 'Now',
-					onSelect: function(dateText, inst) {
-						fecha_fin.datepicker("option", "minDate", fecha_inicio.datepicker("getDate"));
-						}
-					}
-				);
-        	    fecha_fin = $("#id_fecha_fin").datepicker({
-					changeMonth: true,
-					changeYear: true, 
-					closeText: 'X',
-					dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-					gotoCurrent: true,
-					monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-					yearRange: '1988:'+fecha_emision.getFullYear(),
-					dateFormat: 'mm/dd/yy', 
-					currentText: 'Now'}
-					);
-                sumarMontosHoy();
-        	});
 			function getBoletas(){
         	 $.getJSON("/wvb/json/boletas/nodate-nodate-"+1+"-"+tboletas.find("tbody tr").length,
         	 function(data){
@@ -225,7 +240,7 @@
 			 });
         	}
         	function getBoletasDate(){
-        	 var fecha_inicio=$("#id_fecha_inicio").val().replace(/[/]/g,"");;
+        	 var fecha_inicio=$("#id_fecha_inicio").val().replace(/[/]/g,"");
         	 var fecha_fin=$("#id_fecha_fin").val().replace(/[/]/g,""); 	 
         	 if(fecha_inicio!="" && fecha_fin!=""){
         	 $.getJSON("/wvb/json/boletas/"+fecha_inicio+"-"+fecha_fin+"-"+0+"-"+tboletas.find("tbody tr").length,

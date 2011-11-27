@@ -2,76 +2,110 @@
 {% block title %}W.V.B. - Alumno{% endblock %}
 {% block content %}
     <form method="post" action="/alumno/guardar/" class="yform full" role="application" enctype="multipart/form-data" onSubmit="return confirmar('¿Esta segur@ que desea registrar al alumno?');">
-    {% csrf_token %}
-	<fieldset>
-	    <div class="subcolumns">
+		{% csrf_token %}
 		<fieldset>
-		    <legend>Alumno</legend>
-		    <div class="c50l">
-				<div class="subcl type-text">
-					{{ alumno_form.dni.errors }}
-					<label for="id_dni">D.N.I.:</label>
-					{{ alumno_form.dni }}
+			<legend>Matricula</legend>
+			<div class="subcolumns">
+				<div class="c50l">
+					<div class="subcl type-text">
+						{{ alumno_form.numero_matricula.errors }}
+						<label for="id_dni">N° de Matricula:</label>
+						{{ alumno_form.numero_matricula }}
+					</div>
+					<div class="subcl type-select">
+						<label for="id_nombre">Carrera:</label>
+						<select id='id_carrera' name='carrera'>
+							{% for carrera in  carreras %}
+							<option value='{{ carrera.id }}'>{{ carrera.carrera }}</option>
+							{% endfor %}
+						</select>
+					</div>
 				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.nombre.errors }}
-					<label for="id_nombre">Nombre:</label>
-					{{ alumno_form.nombre }}
+				<div class="c50r">
+					<div class="subcl type-text">
+						<label for="id_dni">Serie - Número:</label>
+						<input id='id_serie_numero' name='serie_numero' value='{{ serie_numero.serie }} - {{ serie_numero.numero }}'/>
+					</div>
+					<div class="subcl type-select">
+						<label for="id_nombre">Concepto:</label>
+						<select id='id_concepto' name='concepto'>
+							{% for concepto in  conceptos %}
+							<option value='{{ concepto.id }}'>{{ concepto.concepto }}</option>
+							{% endfor %}
+						</select>
+					</div>
 				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.apellido.errors }}
-					<label for="id_apellido">Apellido:</label>
-					{{ alumno_form.apellido }}
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend>Alumno</legend>
+			<div class="subcolumns">
+				<div class="c50l">
+					<div class="subcl type-text">
+						{{ alumno_form.dni.errors }}
+						<label for="id_dni">D.N.I.:</label>
+						{{ alumno_form.dni }}
+					</div>
+					<div class="subcl type-text">
+						{{ alumno_form.nombre.errors }}
+						<label for="id_nombre">Nombre:</label>
+						{{ alumno_form.nombre }}
+					</div>
+					<div class="subcl type-text">
+						{{ alumno_form.apellido.errors }}
+						<label for="id_apellido">Apellido:</label>
+						{{ alumno_form.apellido }}
+					</div>
+					<div class="subcl type-text">
+						{{ alumno_form.fecha_nacimiento.errors }}
+						<label for="id_fecha_nacimiento">Fecha Nacimiento:</label>
+						{{ alumno_form.fecha_nacimiento }}
+					</div>
+					<div class="subcl type-text">
+						{{ alumno_form.celular.errors }}
+						<label for="id_celular">Celular:</label>
+						{{ alumno_form.celular }}
+					</div>
+					<div class="subcl type-text">
+						{{ alumno_form.foto.errors }}
+						<label for="id_foto">Foto:</label>
+						{{ alumno_form.foto }}
+					</div>
 				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.fecha_nacimiento.errors }}
-					<label for="id_fecha_nacimiento">Fecha Nacimiento:</label>
-					{{ alumno_form.fecha_nacimiento }}
-				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.celular.errors }}
-					<label for="id_celular">Celular:</label>
-					{{ alumno_form.celular }}
-				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.foto.errors }}
-					<label for="id_foto">Foto:</label>
-					{{ alumno_form.foto }}
-				</div>
-		    </div>
-		    <div class="c50r">
-				<div class="subcl type-text">
-					{{ alumno_form.apoderado.errors }}
-					<label for="id_carrera">Apoderado:</label>
-					{{ alumno_form.apoderado }}
-				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.email.errors }}
-					<label for="id_email">E-mail:</label>
-					{{ alumno_form.email }}
-				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.telefono.errors }}
-					<label for="id_telefono">Teléfono:</label>
-					{{ alumno_form.telefono }}
-				</div>
-				<div class="subcl type-select">
-					{{ alumno_form.sexo.errors }}
-					<label for="id_sexo">Sexo:</label>
-					{{ alumno_form.sexo }}
-				</div>
-				<div class="subcl type-text">
-					{{ alumno_form.direccion.errors }}
-					<label for="id_carrera">Dirección:</label>
-					{{ alumno_form.direccion }}
-				</div>
-		  </div>
-        </fieldset>
-        <div class="type-button">
-              <input type="reset" value="Nuevo" class="reset" id="reset" name="reset" />
-              <input type="submit" value="Guardar" class="submit" id="submit" name="submit" />
-        </div>
-     </form>
+				<div class="c50r">
+					<div class="subcl type-text">
+						{{ alumno_form.apoderado.errors }}
+						<label for="id_carrera">Apoderado:</label>
+						{{ alumno_form.apoderado }}
+					</div>
+					<div class="subcl type-text">
+						{{ alumno_form.email.errors }}
+						<label for="id_email">E-mail:</label>
+						{{ alumno_form.email }}
+					</div>
+					<div class="subcl type-text">
+						{{ alumno_form.telefono.errors }}
+						<label for="id_telefono">Teléfono:</label>
+						{{ alumno_form.telefono }}
+					</div>
+					<div class="subcl type-select">
+						{{ alumno_form.sexo.errors }}
+						<label for="id_sexo">Sexo:</label>
+						{{ alumno_form.sexo }}
+					</div>
+					<div class="subcl type-text">
+						{{ alumno_form.direccion.errors }}
+						<label for="id_carrera">Dirección:</label>
+						{{ alumno_form.direccion }}
+					</div>
+			  </div>
+			</div>
+		</fieldset>
+		<div class="type-button">
+			  <input type="reset" value="Nuevo" class="reset" id="reset" name="reset" />
+			  <input type="submit" value="Guardar" class="submit" id="submit" name="submit" />
+		</div>
+    </form>
 {% endblock %}
 {% block left-bar %}
     {% include 'home/academico.html' %}

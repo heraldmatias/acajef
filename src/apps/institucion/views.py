@@ -19,6 +19,7 @@ def carrera(request):
             for i in range(0,ciclos):
                 Ciclo.objects.create(carrera = carrera_form.instance, ciclo = CICLOS[i]).save()
             Ciclo.objects.create(carrera = carrera_form.instance,ciclo = 'Egresado').save()
+            Ciclo.objects.create(carrera = carrera_form.instance,ciclo = 'Pre-Matriculado').save()
             return redirect('/institucion/carrera')
     carreras = Carrera.objects.all().order_by('carrera')
     return render(request,

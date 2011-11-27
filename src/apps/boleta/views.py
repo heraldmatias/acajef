@@ -51,6 +51,13 @@ def alumno_boleta_nombre_json(request):
     return HttpResponse(simplejson.dumps(resultado),mimetype='application/json')
 
 @login_required(login_url='/wvb/')
+def alumno_boleta_id_json(request):
+    alumno = request.GET.get('term')
+    alumnos = Alumno.objects.values('id', 'nombre', 'apellido').filter(Q(nombre__icontains = alumno) | Q(apellido__icontains = alumno), Q(matriculado = True))
+    resultado = [{'id' : alumnoselect['id'], 'value' : u'%s, %s' % (alumnoselect['apellido'], alumnoselect['nombre'])} for alumnoselect in alumnos]
+    return HttpResponse(simplejson.dumps(resultado),mimetype='application/json')
+
+@login_required(login_url='/wvb/')
 def boleta_imprimir(request, boleta_id):
     boleta = Boleta.objects.get(pk = boleta_id)
     return render(request, 'boleta/boleta_imprimir.html', {'boleta' : boleta,})
@@ -77,6 +84,10 @@ def boleta_json(request, serie, numero):
 				  "alumno" : u'%s, %s' % (boleta[7],boleta[8]),
 				  "codigo" : boleta[9],
 				  }
+    return HttpResponse(simplejson.dumps(boleta_json), mimetype='application/json')
+
+@login_required(login_url='/wvb/')
+def boleta_buscar(request, serie, numero, alumno, fecha_inicio, fecha_fin, anulado):
     return HttpResponse(simplejson.dumps(boleta_json), mimetype='application/json')
 
 @login_required(login_url='/wvb/')

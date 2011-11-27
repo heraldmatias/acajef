@@ -11,10 +11,10 @@ SEXO = (
 
 class Alumno(models.Model):
     codigo           = models.CharField('Código', max_length=10, blank=True, null=True)
-    numero_matricula = models.CharField('Código', max_length=12, blank=True, null=True)
+    numero_matricula = models.CharField('Número Matricula', max_length=12, blank=True, null=True)
     apellido         = models.CharField('Apellido', max_length=200)
     nombre           = models.CharField('Nombre', max_length=200)
-    dni              = models.CharField('D.N.I.', max_length=8, unique=True)
+    dni              = models.CharField('D.N.I.', max_length=12, unique=True)
     telefono         = models.CharField('Teléfono', max_length=10, blank=True, null=True)
     sexo             = models.CharField('Sexo', max_length=1, choices = SEXO, blank=True, null=True)
     celular          = models.CharField('Celular', max_length=12, blank=True, null=True)
@@ -22,7 +22,7 @@ class Alumno(models.Model):
     direccion        = models.TextField('Dirección', blank=True, null=True)
     foto             = models.ImageField('Foto', upload_to='alumno/', blank=True, null=True)
     apoderado        = models.CharField('Apoderado', max_length=250)
-    email            = models.EmailField('E-mail')
+    email            = models.EmailField('E-Mail')
     matriculado      = models.BooleanField('Matriculado', default=False)
 
     class Meta:
